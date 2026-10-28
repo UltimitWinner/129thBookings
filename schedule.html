@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
-    content="Schedule an appointment with Wesley Forsberg. Choose meeting type, date, and time." />
-  <title>Schedule an Appointment | Wesley Forsberg</title>
+    content="Schedule an appointment for the 129th Ward. Choose meeting type, date, and time." />
+  <title>Schedule an Appointment | by Wesley Forsberg</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
@@ -1523,6 +1523,9 @@
             currentConfig = Object.assign(currentConfig, parsed);
             meetingTypes = currentConfig.meetingTypes;
           }
+          if (Array.isArray(parsed.windows) && parsed.windows.length > 0) {
+            activateAvailabilityWindows = parsed.windows;
+          }
         }
       } catch (e) {
         console.warn('Could not read config from localStorage', e);
@@ -1537,9 +1540,14 @@
           // Note: Make sure your Apps Script doGet() handles action=getConfig publicly
           const resp = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getConfig`);
           const json = await resp.json();
-          if (json.success && json.config && json.config.meetingTypes) {
+          if (json.success && json.config) {
             currentConfig = Object.assign(currentConfig, json.config);
-            meetingTypes = currentConfig.meetingTypes;
+            if (json.config.meetingTypes) {
+              meetingTypes = json.config.meetingTypes;
+            }
+            if (Array.isArray(json.config.windows)) {
+              activeAvailabilityWindows = json.config.windows;
+            }
 
             // Cache it locally
             localStorage.setItem('wf_calendar_config', JSON.stringify(currentConfig));
