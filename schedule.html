@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Schedule an appointment with Wesley Forsberg. Choose meeting type, date, and time." />
+  <title>Schedule an Appointment | Wesley Forsberg</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 29, 47, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(30, 41, 67, 0.9);
+      --accent-1: #6366f1;
+      --accent-2: #8b5cf6;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --accent-emerald: #10b981;
+      --text-main: #f3f4f6;
+      --text-muted: #94a3b8;
+      --text-soft: #cbd5e1;
+      --tag-bg: rgba(99, 102, 241, 0.12);
+      --tag-border: rgba(99, 102, 241, 0.25);
+      --tag-text: #a5b4fc;
+      --input-bg: rgba(15, 23, 42, 0.7);
+      --input-border: rgba(255, 255, 255, 0.12);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 60%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px 80px 16px;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Glass card container */
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    /* Header Profile */
+    header.booking-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header.booking-header::before {
+      content: '';
+      position: absolute;
+      top: -70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 140px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      opacity: 0.35;
+      filter: blur(48px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px var(--accent-glow);
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: var(--accent-emerald);
+      border: 2.5px solid var(--bg);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-emerald);
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      color: var(--tag-text);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-tag svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 6px;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .headline {
+      font-size: 1.05rem;
+      color: var(--text-soft);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .subtext {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 580px;
+    }
+
+    /* Stepper Header */
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin-top: 10px;
+      padding: 0 10px;
+    }
+
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 30px;
+      right: 30px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.08);
+      z-index: 1;
+    }
+
+    .step-progress-bar {
+      position: absolute;
+      top: 18px;
+      left: 30px;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      z-index: 2;
+      transition: width 0.3s ease;
+    }
+
+    .step-item {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #111827;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.25s ease;
+    }
+
+    .step-item.active .step-circle {
+      border-color: var(--accent-1);
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .step-item.completed .step-circle {
+      background: var(--accent-emerald);
+      border-color: var(--accent-emerald);
+      color: #fff;
+    }
+
+    .step-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .step-item.active .step-label {
+      color: #fff;
+    }
+
+    /* Meeting Types Grid */
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .meeting-types-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .meeting-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .meeting-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .meeting-card.selected {
+      background: rgba(99, 102, 241, 0.12);
+      border-color: var(--accent-1);
+      box-shadow: 0 0 0 1px var(--accent-1), 0 8px 24px var(--accent-glow);
+    }
+
+    .meeting-card-check {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .meeting-card.selected .meeting-card-check {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      border-color: transparent;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .meeting-card-check svg {
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.15s ease;
+      color: #fff;
+    }
+
+    .meeting-card.selected .meeting-card-check svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .selection-calc-pill {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      margin-top: 18px;
+    }
+
+    .selection-calc-pill strong {
+      color: #fff;
+    }
+
+    .meeting-icon-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .meeting-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent-1);
+    }
+
+    .meeting-card.selected .meeting-icon {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+    }
+
+    .duration-tag {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .meeting-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .meeting-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .meeting-location {
+      font-size: 0.8rem;
+      color: var(--tag-text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    /* Date & Time Picker Layout */
+    .datetime-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 720px) {
+      .datetime-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Calendar Widget */
+    .calendar-container {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .calendar-month {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .cal-nav-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cal-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .cal-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-soft);
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .cal-day:hover:not(.disabled):not(.empty) {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.4);
+      color: #fff;
+    }
+
+    .cal-day.disabled {
+      color: rgba(255, 255, 255, 0.18);
+      cursor: not-allowed;
+    }
+
+    .cal-day.empty {
+      cursor: default;
+    }
+
+    .cal-day.today {
+      border-color: rgba(99, 102, 241, 0.4);
+      font-weight: 700;
+    }
+
+    .cal-day.selected {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    /* Time Slots */
+    .time-slots-container {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slot-heading {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .slot-subtext {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .slots-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 290px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .slots-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .slots-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .time-slot-btn {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-soft);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .time-slot-btn:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--accent-1);
+      color: #fff;
+      transform: translateX(2px);
+    }
+
+    .time-slot-btn.selected {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    label .req {
+      color: #ef4444;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent-1);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    /* Selected Summary Bar */
+    .summary-badge-bar {
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+
+    .summary-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent-1);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-soft);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-success:hover {
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Confirmation Modal / Screen */
+    .confirmation-view {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .confirmed-icon-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid var(--accent-emerald);
+      color: var(--accent-emerald);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.25);
+    }
+
+    .confirmed-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .confirmed-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 520px;
+      margin: 0 auto 28px auto;
+    }
+
+    .booking-card-recap {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      text-align: left;
+      margin: 0 auto 28px auto;
+      max-width: 540px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .recap-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .recap-row svg {
+      width: 20px;
+      height: 20px;
+      color: var(--accent-1);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .recap-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .recap-value {
+      font-size: 0.98rem;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .calendar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* Google Calendar Link Button */
+    .btn-google-cal {
+      background: #ffffff;
+      color: #1f2937;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-google-cal:hover {
+      background: #f3f4f6;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
+    }
+
+    /* Helper notification toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--accent-1);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      z-index: 999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Timezone pill */
+    .tz-info {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    /* Step display control */
+    .step-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .step-section.active-step {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Host Info Banner */
+    .host-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .host-banner strong {
+      color: var(--text-soft);
+    }
+
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 10px 48px 10px;
+      }
+
+      .container {
+        gap: 18px;
+      }
+
+      .glass-card {
+        padding: 20px 16px;
+        border-radius: var(--radius-md);
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .headline {
+        font-size: 0.95rem;
+      }
+
+      .subtext {
+        font-size: 0.88rem;
+      }
+
+      /* Stepper Mobile */
+      .step-indicator {
+        padding: 0 4px;
+        margin-top: 4px;
+      }
+
+      .step-indicator::before {
+        left: 20px;
+        right: 20px;
+        top: 15px;
+      }
+
+      .step-progress-bar {
+        left: 20px;
+        top: 15px;
+      }
+
+      .step-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+
+      .step-label {
+        font-size: 0.68rem;
+        letter-spacing: -0.01em;
+      }
+
+      /* Meeting Types Grid Mobile */
+      .meeting-types-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .meeting-card {
+        padding: 18px 16px;
+      }
+
+      /* Host banner wrap */
+      .host-banner {
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+        padding: 12px 14px;
+      }
+
+      /* Summary bar */
+      .summary-badge-bar {
+        padding: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .summary-badge-bar button {
+        width: 100%;
+      }
+
+      /* Button row mobile */
+      .button-row {
+        flex-direction: column-reverse;
+        gap: 12px;
+      }
+
+      .button-row .btn {
+        width: 100%;
+      }
+
+      /* Calendar touch targets */
+      .cal-days {
+        gap: 4px;
+      }
+
+      .cal-day {
+        min-height: 40px;
+        font-size: 0.85rem;
+      }
+
+      /* Recap card */
+      .booking-card-recap {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="glass-card booking-header">
+      <div class="badge-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        Direct Booking Portal
+      </div>
+      <h1>Meet with Bishop: 129th Ward Meetings</h1>
+      <p class="subtext">
+        Select a meeting type and choose a time that works for you. If you include your email, you will be sent an
+        invitation.
+      </p>
+
+      <div class="host-banner">
+        <div id="user-detected-tz">Timezone: Detecting...</div>
+      </div>
+    </header>
+
+    <!-- Stepper Navigation -->
+    <div class="step-indicator" id="stepper">
+      <div class="step-progress-bar" id="stepper-bar"></div>
+      <div class="step-item active" id="step-nav-1" onclick="goToStep(1)">
+        <div class="step-circle">1</div>
+        <span class="step-label">Meeting Type</span>
+      </div>
+      <div class="step-item" id="step-nav-2" onclick="goToStep(2)">
+        <div class="step-circle">2</div>
+        <span class="step-label">Date & Time</span>
+      </div>
+      <div class="step-item" id="step-nav-3" onclick="goToStep(3)">
+        <div class="step-circle">3</div>
+        <span class="step-label">Your Info</span>
+      </div>
+      <div class="step-item" id="step-nav-4">
+        <div class="step-circle">4</div>
+        <span class="step-label">Confirmed</span>
+      </div>
+    </div>
+
+    <!-- Booking Content Card -->
+    <main class="glass-card" id="booking-card">
+
+      <!-- STEP 1: Select Meeting Type -->
+      <section class="step-section active-step" id="step-1">
+        <h2 class="section-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-1)" stroke-width="2">
+            <rect x="2" y="4" width="20" height="18" rx="4"></rect>
+            <path d="M8 2v4"></path>
+            <path d="M16 2v4"></path>
+            <path d="M2 10h20"></path>
+          </svg>
+          Select Meeting Type
+        </h2>
+        <p class="section-desc">Choose the format that best fits what you'd like to discuss.</p>
+
+        <div class="meeting-types-grid" id="meeting-types-list">
+          <!-- Option 1: Quick Catch-up (10 min) -->
+          <div class="meeting-card" data-type-id="quick-catchup" data-name="Quick Catch-up" data-duration="10"
+            data-desc="Fast check-in or simple question.">
+            <div class="meeting-card-check">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="meeting-icon-row">
+              <div class="meeting-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <span class="duration-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 15 15"></polyline>
+                </svg>
+                10 min
+              </span>
+            </div>
+            <div class="meeting-title">Quick Catch-up</div>
+            <p class="meeting-desc">A fast check-in for brief updates, quick greetings, or quick questions.</p>
+            <div class="meeting-location">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 7l-7 5 7 5V7z"></path>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+              </svg>
+              Google Meet / Phone
+            </div>
+          </div>
+
+          <!-- Option 2: Project Mentorship / Q&A (10 min) -->
+          <div class="meeting-card" data-type-id="mentorship-qa" data-name="Project Mentorship & Q&A" data-duration="10"
+            data-desc="Targeted feedback on a specific code block, assignment, or career question.">
+            <div class="meeting-card-check">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="meeting-icon-row">
+              <div class="meeting-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </div>
+              <span class="duration-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 15 15"></polyline>
+                </svg>
+                10 min
+              </span>
+            </div>
+            <div class="meeting-title">Mentorship & Q&A</div>
+            <p class="meeting-desc">Targeted feedback on a specific problem, resume review, or advice.</p>
+            <div class="meeting-location">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 7l-7 5 7 5V7z"></path>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+              </svg>
+              Google Meet / Phone
+            </div>
+          </div>
+
+          <!-- Option 3: Technical / Architecture Consultation (15 min) -->
+          <div class="meeting-card" data-type-id="tech-consult" data-name="Technical & Architecture Consultation"
+            data-duration="15" data-desc="In-depth code review, technical planning, or design architecture.">
+            <div class="meeting-card-check">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="meeting-icon-row">
+              <div class="meeting-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <span class="duration-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 15 15"></polyline>
+                </svg>
+                15 min
+              </span>
+            </div>
+            <div class="meeting-title">Technical Discussion</div>
+            <p class="meeting-desc">Deep-dive into software engineering, web architecture, or research projects.</p>
+            <div class="meeting-location">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 7l-7 5 7 5V7z"></path>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+              </svg>
+              Google Meet (Video)
+            </div>
+          </div>
+
+          <!-- Option 4: Project Collaboration / Strategy (15 min) -->
+          <div class="meeting-card" data-type-id="collab-strategy" data-name="Project Collaboration & Strategy"
+            data-duration="15" data-desc="Work session for joint project direction, timeline, and strategy.">
+            <div class="meeting-card-check">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="meeting-icon-row">
+              <div class="meeting-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <span class="duration-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 15 15"></polyline>
+                </svg>
+                15 min
+              </span>
+            </div>
+            <div class="meeting-title">Strategy & Planning</div>
+            <p class="meeting-desc">Thorough session for long-term project planning, academic work, or consulting
+              strategy.</p>
+            <div class="meeting-location">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 7l-7 5 7 5V7z"></path>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+              </svg>
+              Google Meet / In Person (BYU)
+            </div>
+          </div>
+        </div>
+
+        <div id="selection-calc-container" class="selection-calc-pill" style="display: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-1)" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 15 15"></polyline>
+          </svg>
+          <div id="selection-calc-text">Selected: <strong>0 topics</strong> • Scheduled Duration: <strong>0
+              mins</strong></div>
+        </div>
+
+        <div class="button-row" style="justify-content: flex-end;">
+          <button type="button" class="btn btn-primary" id="btn-to-step-2" disabled onclick="goToStep(2)">
+            Continue to Date & Time
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: Select Date & Time -->
+      <section class="step-section" id="step-2">
+        <div class="summary-badge-bar">
+          <div class="summary-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 15 15"></polyline>
+            </svg>
+            <span id="summary-meeting-name">Technical Discussion (30 min)</span>
+          </div>
+          <button type="button" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;"
+            onclick="goToStep(1)">
+            Change Type
+          </button>
+        </div>
+
+        <div class="datetime-layout">
+          <!-- Calendar Column -->
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <button type="button" class="cal-nav-btn" id="prev-month-btn" aria-label="Previous Month">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <div class="calendar-month" id="calendar-month-year">October 2026</div>
+              <button type="button" class="cal-nav-btn" id="next-month-btn" aria-label="Next Month">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+
+            <div class="cal-weekdays">
+              <div>Sun</div>
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
+            </div>
+
+            <div class="cal-days" id="calendar-days-grid">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="tz-info">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                </path>
+              </svg>
+              <span id="tz-label">Times shown in your local timezone</span>
+            </div>
+          </div>
+
+          <!-- Time Slots Column -->
+          <div class="time-slots-container">
+            <div class="slot-heading" id="selected-day-heading">Available Slots</div>
+            <div class="slot-subtext" id="slot-day-subtitle">Select a date on the calendar</div>
+
+            <div class="slots-scroll" id="slots-list">
+              <!-- Populated when date clicked -->
+              <div style="text-align: center; color: var(--text-muted); font-size: 0.88rem; padding: 40px 10px;">
+                Please select an available weekday from the calendar to view available time slots.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+            Back
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-to-step-3" disabled onclick="goToStep(3)">
+            Continue to Details
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Attendee Details Form -->
+      <section class="step-section" id="step-3">
+        <div class="summary-badge-bar">
+          <div class="summary-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span id="summary-datetime-info">Select date & time</span>
+          </div>
+          <button type="button" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;"
+            onclick="goToStep(2)">
+            Reschedule
+          </button>
+        </div>
+
+        <form id="booking-form" onsubmit="handleBookingSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="attendee-name">Your Full Name <span class="req">*</span></label>
+              <input type="text" id="attendee-name" placeholder="e.g. Jane Doe" required />
+            </div>
+
+            <div class="form-group">
+              <label for="attendee-email">Your Email Address <span
+                  style="color: var(--text-muted); font-weight: normal;">(Optional - for invite)</span></label>
+              <input type="email" id="attendee-email" placeholder="alex@example.com" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="attendee-phone">Phone Number <span
+                  style="color: var(--text-muted); font-weight: normal;">(Optional)</span></label>
+              <input type="text" id="attendee-phone" placeholder="+1 (555) 000-0000" />
+            </div>
+
+            <div class="form-group">
+              <label for="meeting-location-pref">Meeting Location</label>
+              <input type="text" id="meeting-location-pref" value="In Person (MPB 110)" readonly
+                style="background: rgba(15, 23, 42, 0.4); color: var(--text-soft); cursor: not-allowed;" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="meeting-notes">Do you have any notes? <span
+                style="color: var(--text-muted); font-weight: normal;">(Optional)</span></label>
+            <textarea id="meeting-notes"
+              placeholder="Please share any specifics that you would like for us to know. For example, do you have any follow-up requests?"></textarea>
+          </div>
+
+          <div class="button-row">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(2)">
+              Back
+            </button>
+            <button type="submit" class="btn btn-success" id="btn-confirm-appointment">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Confirm Appointment
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- STEP 4: Confirmation & Google Calendar Integration -->
+      <section class="step-section" id="step-4">
+        <div class="confirmation-view">
+          <div class="confirmed-icon-circle">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h2 class="confirmed-title">Appointment Confirmed!</h2>
+          <p class="confirmed-subtitle">
+            Your appointment has been booked into the calendar. An official calendar invitation with event details has
+            been sent to your email address if provided.
+          </p>
+
+          <div class="booking-card-recap" id="confirmation-recap">
+            <!-- Filled dynamically -->
+          </div>
+
+          <div class="calendar-actions">
+            <button type="button" class="btn btn-secondary" id="btn-download-ics" onclick="downloadIcsFile()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download .ICS Invite (Apple / Outlook)
+            </button>
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button type="button" class="btn btn-secondary" onclick="resetBookingFlow()" style="font-size: 0.85rem;">
+              Schedule Another Appointment
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Global Toast Notification -->
+    <div id="toast" class="toast">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span id="toast-message">Notice</span>
+    </div>
+
+    <!-- Admin Portal Link -->
+    <footer style="text-align: center; margin-top: 10px;">
+      <a href="admin.html"
+        style="color: var(--text-muted); font-size: 0.78rem; text-decoration: none; opacity: 0.6; transition: opacity 0.2s;"
+        onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+        ⚙ Admin Availability Settings
+      </a>
+      <p>&copy; 2026 Wesley Forsberg</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // State Management & Backend Integration
+    const HOST_EMAIL = 'Forsberginventor@gmail.com';
+    const HOST_NAME = 'James Christensen';
+
+    // Paste your deployed Google Apps Script Web App URL here:
+    const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9w0cYCICpM8MhyJG1TlyqE3ngsfb8TIE0S_SCrDYk7lzCI-_7Jrr0OBp8yIb96tsR/exec';
+
+    let currentStep = 1;
+    let selectedMeetingIds = new Set();
+    let selectedMeeting = null; // Composite object { name, duration, items }
+    let selectedDate = null; // Date object
+    let selectedSlot = null; // String "09:00 AM"
+    let currentCalMonth = new Date().getMonth();
+    let currentCalYear = new Date().getFullYear();
+
+    let confirmedAppointmentData = null;
+
+    // Global configuration and meeting types storage
+    let currentConfig = {
+      bufferMinutes: 0,
+      clusterWindowMinutes: 15,
+      meetingTypes: []
+    };
+    let meetingTypes = [];
+
+    // Fetch configuration on page load
+    async function loadFrontendConfig() {
+      // 1. Load from localStorage first so it renders instantly
+      try {
+        const saved = localStorage.getItem('wf_calendar_config');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.meetingTypes) {
+            currentConfig = Object.assign(currentConfig, parsed);
+            meetingTypes = currentConfig.meetingTypes;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not read config from localStorage', e);
+      }
+
+      // Render whatever we have initially
+      renderMeetingTypeCards();
+
+      // 2. Fetch fresh live config from your Apps Script backend
+      if (APPS_SCRIPT_WEBAPP_URL && !APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) {
+        try {
+          // Note: Make sure your Apps Script doGet() handles action=getConfig publicly
+          const resp = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getConfig`);
+          const json = await resp.json();
+          if (json.success && json.config && json.config.meetingTypes) {
+            currentConfig = Object.assign(currentConfig, json.config);
+            meetingTypes = currentConfig.meetingTypes;
+
+            // Cache it locally
+            localStorage.setItem('wf_calendar_config', JSON.stringify(currentConfig));
+
+            // Re-render cards with the fresh live data from the admin panel
+            renderMeetingTypeCards();
+          }
+        } catch (err) {
+          console.warn('Could not fetch live remote config, using local cache', err);
+        }
+      }
+    }
+
+    /**
+     * Calculate combined schedule length with formula:
+     * - First topic takes its full nominal duration (10m or 15m).
+     * - Each additional 10m topic adds 5 minutes (e.g. 10 + 10 = 15).
+     * - Each additional 15m topic adds 10 minutes (e.g. 15 + 15 = 25, 10 + 10 + 15 = 25).
+     */
+    function computeCombinedDuration(items) {
+      if (!items || items.length === 0) return 0;
+      let total = 0;
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (i === 0) {
+          total += item.duration;
+        } else {
+          if (item.duration === 5) {
+            total += 0;
+          } else {
+            total += Math.max(5, item.duration - 5);
+          }
+        }
+      }
+      return total;
+    }
+
+    // Active availability windows (synced with admin settings and backend)
+    let activeAvailabilityWindows = [
+      { day: 0, start: '09:30', end: '11:45' }, // Sunday: 9:30 - 11:45 AM
+      { day: 3, start: '18:30', end: '21:00' }  // Wednesday: 6:30 - 9:00 PM
+    ];
+
+    function loadSavedAvailabilityConfig() {
+      try {
+        const saved = localStorage.getItem('wf_calendar_config');
+        if (saved) {
+          const cfg = JSON.parse(saved);
+          if (Array.isArray(cfg.windows) && cfg.windows.length > 0) {
+            activeAvailabilityWindows = cfg.windows;
+          }
+          if (cfg.meetingTypes) {
+            meetingTypes = cfg.meetingTypes;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not read local config', e);
+      }
+    }
+
+    // Initialize Page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Timezone detection
+      try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        document.getElementById('user-detected-tz').innerText = `Your Timezone: ${tz}`;
+        document.getElementById('tz-label').innerText = `Times shown in ${tz}`;
+      } catch (e) {
+        document.getElementById('user-detected-tz').innerText = 'Timezone: Local';
+      }
+      // Call the new config loader here instead of rendering static hardcoded cards
+      loadFrontendConfig();
+      loadSavedAvailabilityConfig();
+      renderMeetingTypeCards();
+      initCalendar();
+    });
+
+    // Step 1: Render and bind Multi-select Meeting Type Selection
+    function renderMeetingTypeCards() {
+      const container = document.getElementById('meeting-types-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      // Normalize into ordered array
+      const list = Array.isArray(meetingTypes)
+        ? meetingTypes
+        : Object.keys(meetingTypes).map(k => meetingTypes[k]);
+
+      list.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'meeting-card';
+        card.setAttribute('data-type-id', m.id);
+        if (selectedMeetingIds.has(m.id)) {
+          card.classList.add('selected');
+        }
+
+        card.innerHTML = `
+          <div class="meeting-card-check">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <div class="meeting-icon-row">
+            <div class="meeting-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 15 15"></polyline>
+              </svg>
+            </div>
+            <span class="duration-tag">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 15 15"></polyline>
+              </svg>
+              ${m.duration} min
+            </span>
+          </div>
+          <div class="meeting-title">${m.name}</div>
+          <p class="meeting-desc">${m.desc || ''}</p>
+          <div class="meeting-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            In Person (MPB 110)
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          if (selectedMeetingIds.has(m.id)) {
+            selectedMeetingIds.delete(m.id);
+            card.classList.remove('selected');
+          } else {
+            selectedMeetingIds.add(m.id);
+            card.classList.add('selected');
+          }
+          updateMeetingSelectionState();
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function updateMeetingSelectionState() {
+      const calcContainer = document.getElementById('selection-calc-container');
+      const calcText = document.getElementById('selection-calc-text');
+      const nextBtn = document.getElementById('btn-to-step-2');
+
+      const list = Array.isArray(meetingTypes)
+        ? meetingTypes
+        : Object.keys(meetingTypes).map(k => meetingTypes[k]);
+
+      const selectedItems = list.filter(item => selectedMeetingIds.has(item.id));
+
+      if (selectedItems.length === 0) {
+        selectedMeeting = null;
+        calcContainer.style.display = 'none';
+        nextBtn.setAttribute('disabled', 'true');
+        return;
+      }
+
+      const totalDuration = computeCombinedDuration(selectedItems);
+      const combinedTitle = selectedItems.map(m => m.name).join(' + ');
+
+      selectedMeeting = {
+        name: combinedTitle,
+        duration: totalDuration,
+        items: selectedItems
+      };
+
+      calcContainer.style.display = 'flex';
+      calcText.innerHTML = `Selected: <strong>${selectedItems.length} topic${selectedItems.length > 1 ? 's' : ''}</strong> (${selectedItems.map(i => `${i.name}: ${i.duration}m`).join(', ')}) • Scheduled Duration: <strong>${totalDuration} mins</strong>`;
+      nextBtn.removeAttribute('disabled');
+    }
+
+    // Truncate Names
+    function generateEventAbbreviation(selectedMeetingCards) {
+      let abbreviations = [];
+      let fullNames = [];
+
+      selectedMeetingCards.forEach(card => {
+        let name = card.getAttribute('data-name');
+        fullNames.push(name);
+
+        // Get first letters of the first two words
+        let words = name.trim().split(/\s+/);
+        let abbrev = "";
+        if (words.length >= 2) {
+          abbrev = words[0].charAt(0) + words[1].charAt(0);
+        } else if (words.length === 1) {
+          abbrev = words[0].substring(0, 2);
+        }
+        abbreviations.push(abbrev.toUpperCase());
+      });
+
+      return {
+        code: abbreviations.join(','),
+        fullList: fullNames.join(', ')
+      };
+    }
+
+    // Step Navigation
+    function goToStep(stepNumber) {
+      if (stepNumber === 2 && !selectedMeeting) {
+        showToast('Please select at least one meeting topic first.');
+        return;
+      }
+      if (stepNumber === 3 && (!selectedDate || !selectedSlot)) {
+        showToast('Please choose both a date and a time slot.');
+        return;
+      }
+
+      currentStep = stepNumber;
+
+      // Update Views
+      document.querySelectorAll('.step-section').forEach(sec => sec.classList.remove('active-step'));
+      document.getElementById(`step-${stepNumber}`).classList.add('active-step');
+
+      // Update Stepper
+      const steps = [1, 2, 3, 4];
+      steps.forEach(s => {
+        const navEl = document.getElementById(`step-nav-${s}`);
+        if (!navEl) return;
+        navEl.classList.remove('active', 'completed');
+        if (s === stepNumber) {
+          navEl.classList.add('active');
+        } else if (s < stepNumber) {
+          navEl.classList.add('completed');
+        }
+      });
+
+      // Stepper Bar Progress
+      const progressPercent = ((stepNumber - 1) / 3) * 100;
+      document.getElementById('stepper-bar').style.width = `${progressPercent}%`;
+
+      // Update summaries
+      if (stepNumber === 2 && selectedMeeting) {
+        document.getElementById('summary-meeting-name').innerText = `${selectedMeeting.name} (${selectedMeeting.duration} min)`;
+      } else if (stepNumber === 3) {
+        const dateStr = selectedDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        document.getElementById('summary-datetime-info').innerText = `${selectedMeeting.name} • ${dateStr} at ${selectedSlot}`;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Step 2: Interactive Calendar
+    function initCalendar() {
+      renderCalendar(currentCalMonth, currentCalYear);
+
+      document.getElementById('prev-month-btn').addEventListener('click', () => {
+        const today = new Date();
+        // Prevent going prior to current month/year
+        if (currentCalYear === today.getFullYear() && currentCalMonth <= today.getMonth()) {
+          return;
+        }
+        currentCalMonth--;
+        if (currentCalMonth < 0) {
+          currentCalMonth = 11;
+          currentCalYear--;
+        }
+        renderCalendar(currentCalMonth, currentCalYear);
+      });
+
+      document.getElementById('next-month-btn').addEventListener('click', () => {
+        currentCalMonth++;
+        if (currentCalMonth > 11) {
+          currentCalMonth = 0;
+          currentCalYear++;
+        }
+        renderCalendar(currentCalMonth, currentCalYear);
+      });
+    }
+
+    function renderCalendar(month, year) {
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      document.getElementById('calendar-month-year').innerText = `${monthNames[month]} ${year}`;
+
+      const grid = document.getElementById('calendar-days-grid');
+      grid.innerHTML = '';
+
+      const firstDayOfMonth = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Empty cells before start of month
+      for (let i = 0; i < firstDayOfMonth; i++) {
+        const empty = document.createElement('div');
+        empty.className = 'cal-day empty';
+        grid.appendChild(empty);
+      }
+
+      // Days of month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'cal-day';
+        dayEl.innerText = day;
+
+        const cellDate = new Date(year, month, day);
+        cellDate.setHours(0, 0, 0, 0);
+
+        const dayOfWeek = cellDate.getDay();
+        const hasWindowOnDay = activeAvailabilityWindows.some(w => w.day === dayOfWeek);
+        const isPast = cellDate < today;
+
+        if (cellDate.getTime() === today.getTime()) {
+          dayEl.classList.add('today');
+        }
+
+        // Only allow days that have active availability windows configured (e.g. Sundays & Wednesdays)
+        if (isPast || !hasWindowOnDay) {
+          dayEl.classList.add('disabled');
+        } else {
+          // If already selected
+          if (selectedDate && cellDate.getTime() === selectedDate.getTime()) {
+            dayEl.classList.add('selected');
+          }
+
+          dayEl.addEventListener('click', () => {
+            document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+            dayEl.classList.add('selected');
+            selectedDate = cellDate;
+            renderTimeSlots(cellDate);
+          });
+        }
+
+        grid.appendChild(dayEl);
+      }
+    }
+
+    async function renderTimeSlots(date) {
+      const heading = document.getElementById('selected-day-heading');
+      const subtitle = document.getElementById('slot-day-subtitle');
+      const container = document.getElementById('slots-list');
+
+      const dateStr = date.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+      heading.innerText = `Slots for ${dateStr}`;
+      subtitle.innerText = 'Checking availability...';
+
+      container.innerHTML = `
+        <div style="text-align: center; color: var(--text-muted); font-size: 0.88rem; padding: 30px 10px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite; margin-bottom: 8px;">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+          </svg>
+          <div>Checking live calendar availability...</div>
+        </div>
+      `;
+
+      // Year-Month-Day format for API
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const isoDate = `${yyyy}-${mm}-${dd}`;
+      const duration = selectedMeeting ? selectedMeeting.duration : 15;
+
+      // Generate default window start time as fallback
+      const matchingWindows = activeAvailabilityWindows.filter(w => w.day === date.getDay());
+      let slotsToDisplay = [];
+      matchingWindows.forEach(w => {
+        const [h, m] = w.start.split(':').map(Number);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const hr = h % 12 || 12;
+        slotsToDisplay.push(`${hr < 10 ? '0' + hr : hr}:${m < 10 ? '0' + m : m} ${ampm}`);
+      });
+
+      // If connected to Google Apps Script backend, fetch real-time free slots
+      if (APPS_SCRIPT_WEBAPP_URL && !APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR_APPS_SCRIPT_URL_HERE')) {
+        try {
+          const resp = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getAvailability&date=${isoDate}&duration=${duration}`);
+          const json = await resp.json();
+          if (json.success && Array.isArray(json.slots)) {
+            slotsToDisplay = json.slots;
+          }
+        } catch (err) {
+          console.warn('Could not fetch real-time slots, falling back to local availability rules', err);
+        }
+      }
+
+      container.innerHTML = '';
+
+      if (slotsToDisplay.length === 0) {
+        subtitle.innerText = 'No slots available';
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--text-muted); font-size: 0.88rem; padding: 30px 10px;">
+            No available times on this date. Please select another day.
+          </div>
+        `;
+        return;
+      }
+
+      subtitle.innerText = 'Select a time slot:';
+
+      slotsToDisplay.forEach(timeStr => {
+        const slotBtn = document.createElement('button');
+        slotBtn.type = 'button';
+        slotBtn.className = 'time-slot-btn';
+        if (selectedSlot === timeStr) {
+          slotBtn.classList.add('selected');
+        }
+
+        slotBtn.innerHTML = `
+          <span>${timeStr}</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        `;
+
+        slotBtn.addEventListener('click', () => {
+          document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('selected'));
+          slotBtn.classList.add('selected');
+          selectedSlot = timeStr;
+          document.getElementById('btn-to-step-3').removeAttribute('disabled');
+        });
+
+        container.appendChild(slotBtn);
+      });
+    }
+
+    // Step 3: Handle Booking Form Submission
+    async function handleBookingSubmit(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('attendee-name').value.trim();
+      const email = document.getElementById('attendee-email').value.trim();
+      const phone = document.getElementById('attendee-phone').value.trim();
+      const location = document.getElementById('meeting-location-pref').value;
+      const notes = document.getElementById('meeting-notes').value.trim();
+      const submitBtn = document.getElementById('btn-confirm-appointment');
+
+      if (!name) {
+        showToast('Please fill in your Name.');
+        return;
+      }
+
+      // Calculate start and end Date objects
+      const [time, period] = selectedSlot.split(' ');
+      let [hours, minutes] = time.split(':').map(Number);
+      if (period === 'PM' && hours !== 12) hours += 12;
+      if (period === 'AM' && hours === 12) hours = 0;
+
+      const startDate = new Date(selectedDate);
+      startDate.setHours(hours, minutes, 0, 0);
+
+      const endDate = new Date(startDate.getTime() + selectedMeeting.duration * 60 * 1000);
+
+      confirmedAppointmentData = {
+        name,
+        email,
+        phone,
+        location,
+        notes,
+        meeting: selectedMeeting,
+        startDate,
+        endDate,
+        createdDate: new Date()
+      };
+
+      // Disable button while processing
+      submitBtn.setAttribute('disabled', 'true');
+      const originalBtnHtml = submitBtn.innerHTML;
+      submitBtn.innerHTML = `Booking & Sending Invitation...`;
+
+      // Call Google Apps Script if configured
+      if (APPS_SCRIPT_WEBAPP_URL && !APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR_APPS_SCRIPT_URL_HERE')) {
+        try {
+          const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain prevents CORS preflight in Apps Script
+            body: JSON.stringify({
+              name,
+              email,
+              phone,
+              location,
+              notes,
+              meetingTitle: selectedMeeting.name,
+              startIso: startDate.toISOString(),
+              endIso: endDate.toISOString()
+            })
+          });
+
+          const result = await resp.json();
+          if (!result.success) {
+            submitBtn.removeAttribute('disabled');
+            submitBtn.innerHTML = originalBtnHtml;
+            showToast(result.error || 'Failed to book slot.');
+            return;
+          }
+        } catch (err) {
+          console.error('Google Apps Script request error:', err);
+          // If network error, still proceed so the attendee doesn't lose their data
+        }
+      }
+
+      submitBtn.removeAttribute('disabled');
+      submitBtn.innerHTML = originalBtnHtml;
+
+      // Store in local storage for persistence
+      saveAppointment(confirmedAppointmentData);
+
+      // Populate Step 4 confirmation
+      populateConfirmationView(confirmedAppointmentData);
+
+      goToStep(4);
+      showToast('Appointment successfully scheduled and invitation sent!');
+    }
+
+    function saveAppointment(appt) {
+      try {
+        const stored = JSON.parse(localStorage.getItem('wf_scheduled_appointments') || '[]');
+        stored.push({
+          meetingName: appt.meeting.name,
+          duration: appt.meeting.duration,
+          start: appt.startDate.toISOString(),
+          end: appt.endDate.toISOString(),
+          name: appt.name,
+          email: appt.email,
+          notes: appt.notes,
+          location: appt.location
+        });
+        localStorage.setItem('wf_scheduled_appointments', JSON.stringify(stored));
+      } catch (e) {
+        console.warn('LocalStorage unavailable');
+      }
+    }
+
+    function populateConfirmationView(data) {
+      const recap = document.getElementById('confirmation-recap');
+      const startStr = data.startDate.toLocaleDateString(undefined, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      const timeStr = `${formatTime(data.startDate)} – ${formatTime(data.endDate)}`;
+
+      recap.innerHTML = `
+        <div class="recap-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          <div>
+            <div class="recap-label">Meeting Type</div>
+            <div class="recap-value">${data.meeting.name} (${data.meeting.duration} Minutes)</div>
+          </div>
+        </div>
+
+        <div class="recap-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <div>
+            <div class="recap-label">Date & Time</div>
+            <div class="recap-value">${startStr}</div>
+            <div style="font-size: 0.9rem; color: var(--text-soft);">${timeStr}</div>
+          </div>
+        </div>
+
+        <div class="recap-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <div>
+            <div class="recap-label">Location / Format</div>
+            <div class="recap-value">${data.location}</div>
+          </div>
+        </div>
+
+        <div class="recap-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <div>
+            <div class="recap-label">Attendee</div>
+            <div class="recap-value">${data.name} &lt;${data.email}&gt;</div>
+          </div>
+        </div>
+
+        ${data.notes ? `
+        <div class="recap-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <div>
+            <div class="recap-label">Agenda / Notes</div>
+            <div style="font-size: 0.88rem; color: var(--text-soft);">${data.notes}</div>
+          </div>
+        </div>` : ''}
+      `;
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    }
+
+    // Generate .ICS Calendar File
+    function downloadIcsFile() {
+      if (!confirmedAppointmentData) return;
+
+      const data = confirmedAppointmentData;
+      const formatIcsDate = (date) => {
+        return date.toISOString().replace(/-|:|\.\d\d\d/g, '');
+      };
+
+      const icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Wesley Forsberg//Appointment Scheduling//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:REQUEST',
+        'BEGIN:VEVENT',
+        `UID:${Date.now()}@wesleyforsberg.com`,
+        `DTSTAMP:${formatIcsDate(new Date())}`,
+        `DTSTART:${formatIcsDate(data.startDate)}`,
+        `DTEND:${formatIcsDate(data.endDate)}`,
+        `SUMMARY:${data.meeting.name} with Bishop Christensen`,
+        `DESCRIPTION:${data.notes.replace(/\n/g, '\\n')} For: ${data.name} \n Email: ${data.email}`,
+        `LOCATION:${data.location}`,
+        `ORGANIZER;CN=Wesley Forsberg:mailto:${HOST_EMAIL}`,
+        `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=${data.name}:mailto:${data.email}`,
+        'STATUS:CONFIRMED',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute('download', `appointment-wesley-forsberg.ics`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Calendar invite (.ics) downloaded!');
+    }
+
+    function resetBookingFlow() {
+      selectedMeetingIds.clear();
+      selectedMeeting = null;
+      selectedDate = null;
+      selectedSlot = null;
+      confirmedAppointmentData = null;
+
+      document.querySelectorAll('.meeting-card').forEach(c => c.classList.remove('selected'));
+      const calcContainer = document.getElementById('selection-calc-container');
+      if (calcContainer) calcContainer.style.display = 'none';
+
+      document.getElementById('btn-to-step-2').setAttribute('disabled', 'true');
+      document.getElementById('btn-to-step-3').setAttribute('disabled', 'true');
+      document.getElementById('booking-form').reset();
+
+      goToStep(1);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+  </script>
+</body>
+
+</html>

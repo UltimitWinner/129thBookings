@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Manage Availability and Scheduling Settings for Wesley Forsberg" />
+  <title>Admin Availability Settings | Wesley Forsberg</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 29, 47, 0.8);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-1: #6366f1;
+      --accent-2: #8b5cf6;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --accent-emerald: #10b981;
+      --accent-red: #ef4444;
+      --text-main: #f3f4f6;
+      --text-muted: #94a3b8;
+      --text-soft: #cbd5e1;
+      --input-bg: rgba(15, 23, 42, 0.7);
+      --input-border: rgba(255, 255, 255, 0.12);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 45%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 16px;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 18px;
+    }
+
+    .header-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-link {
+      font-size: 0.85rem;
+      color: var(--accent-1);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .header-link:hover {
+      text-decoration: underline;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="time"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent-1);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-soft);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    /* Windows List */
+    .window-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .window-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .window-day {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .window-time {
+      font-size: 0.85rem;
+      color: var(--accent-1);
+      font-weight: 600;
+    }
+
+    .add-window-box {
+      background: rgba(99, 102, 241, 0.05);
+      border: 1px dashed rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .add-window-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    @media (max-width: 600px) {
+      .add-window-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--accent-1);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+    }
+
+    .toast.show {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- VIEW 1: Login Card -->
+    <div class="glass-card" id="login-view">
+      <div class="header">
+        <div class="header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-1)" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Admin Login
+        </div>
+        <a href="schedule.html" class="header-link">
+          ← Back to Booking
+        </a>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+        Enter your admin password to update your calendar target and weekly availability hours.
+      </p>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="admin-pass">Admin Password</label>
+          <input type="password" id="admin-pass" placeholder="Enter password " required />
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+            Password is case sensitive.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Log In to Settings
+        </button>
+      </form>
+    </div>
+
+    <!-- VIEW 2: Settings Dashboard -->
+    <div class="glass-card" id="dashboard-view" style="display: none;">
+      <div class="header">
+        <div class="header-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+          </svg>
+          Availability & Calendar Settings
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="schedule.html" class="header-link" target="_blank">
+            View Live Booking Page ↗
+          </a>
+          <button type="button" class="btn btn-secondary" onclick="handleLogout()">
+            Log Out
+          </button>
+        </div>
+      </div>
+
+      <form id="settings-form" onsubmit="handleSaveSettings(event)">
+        <!-- Google Calendar Identifier / Name -->
+        <div class="form-group">
+          <label for="cal-id">Target Calendar Name or ID</label>
+          <input type="text" id="cal-id" value="129th Ward Meetings" placeholder="e.g. 129th Ward Meetings or primary"
+            required />
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">
+            Can be the exact calendar name (e.g. <code>129th Ward Meetings</code>) or secondary Calendar ID from Google
+            Calendar settings.
+          </div>
+        </div>
+
+        <!-- Buffer & Clustering Settings -->
+        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px;">
+          <div class="form-group">
+            <label for="buffer-min">Buffer Between Meetings</label>
+            <select id="buffer-min">
+              <option value="0" selected>0 Minutes (Direct Back-to-Back)</option>
+              <option value="5">5 Minutes</option>
+              <option value="10">10 Minutes</option>
+              <option value="15">15 Minutes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cluster-min">Clustering Rule Window</label>
+            <select id="cluster-min">
+              <option value="15" selected>Within 15 Minutes</option>
+              <option value="30">Within 30 Minutes</option>
+              <option value="0">Any Open Time (No Clustering)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Weekly Availability Windows -->
+        <div class="form-group" style="margin-top: 24px;">
+          <label style="font-size: 0.95rem; font-weight: 700; color: #fff;">
+            Weekly Available Windows
+          </label>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            Bookings are only allowed during these windows, starting at the beginning or within 15 minutes of another
+            meeting.
+          </div>
+
+          <div id="windows-list">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Add New Window Box -->
+          <div class="add-window-box">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft); margin-bottom: 10px;">
+              + Add Available Time Window
+            </div>
+            <div class="add-window-grid">
+              <div>
+                <label for="new-day" style="font-size: 0.75rem;">Day of Week</label>
+                <select id="new-day">
+                  <option value="0">Sunday</option>
+                  <option value="1">Monday</option>
+                  <option value="2">Tuesday</option>
+                  <option value="3">Wednesday</option>
+                  <option value="4">Thursday</option>
+                  <option value="5">Friday</option>
+                  <option value="6">Saturday</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="new-start" style="font-size: 0.75rem;">Start Time</label>
+                <input type="time" id="new-start" value="09:30" />
+              </div>
+
+              <div>
+                <label for="new-end" style="font-size: 0.75rem;">End Time</label>
+                <input type="time" id="new-end" value="11:45" />
+              </div>
+
+              <div>
+                <button type="button" class="btn btn-secondary" onclick="addWindowFromForm()" style="height: 44px;">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meeting Types & Durations Manager -->
+        <div class="form-group"
+          style="margin-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px;">
+          <label style="font-size: 0.95rem; font-weight: 700; color: #fff;">
+            Meeting Types & Durations
+          </label>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            Configure topics attendees can choose from, their base duration, and descriptions.
+          </div>
+
+          <div id="types-list">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Add New Meeting Type Box -->
+          <div class="add-window-box">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft); margin-bottom: 10px;">
+              + Add Meeting Type
+            </div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label for="new-type-name" style="font-size: 0.75rem;">Title / Name</label>
+                <input type="text" id="new-type-name" placeholder="e.g. Planning & Follow-up" />
+              </div>
+              <div>
+                <label for="new-type-dur" style="font-size: 0.75rem;">Duration (Minutes)</label>
+                <input type="number" id="new-type-dur" value="15" min="5" step="5" />
+              </div>
+            </div>
+            <div style="margin-bottom: 10px;">
+              <label for="new-type-desc" style="font-size: 0.75rem;">Short Description</label>
+              <input type="text" id="new-type-desc" placeholder="Brief note explaining the meeting topic" />
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="addMeetingTypeFromForm()" style="width: 100%;">
+              Add Meeting Type
+            </button>
+          </div>
+        </div>
+
+        <!-- Admin Password Update -->
+        <div class="form-group"
+          style="margin-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px;">
+          <label for="new-pass">Update Admin Password (Optional)</label>
+          <input type="password" id="new-pass" placeholder="Leave blank to keep current password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="save-btn" style="margin-top: 12px;">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Settings Saved</div>
+
+  <script>
+    const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9w0cYCICpM8MhyJG1TlyqE3ngsfb8TIE0S_SCrDYk7lzCI-_7Jrr0OBp8yIb96tsR/exec';
+
+    const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    // Default configuration: Sunday 9:30-11:45 & Wednesday 18:30-21:00
+    let currentConfig = {
+      calendarNameOrId: '129th Ward Meetings',
+      adminPass: 'admin123',
+      bufferMinutes: 0,
+      clusterWindowMinutes: 15,
+      windows: [
+        { day: 0, start: '09:30', end: '11:45' }, // Sunday
+        { day: 3, start: '18:30', end: '21:00' }  // Wednesday
+      ],
+      meetingTypes: {
+        'quick-catchup': { id: 'quick-catchup', name: 'Quick Catch-up', duration: 10, desc: 'Fast check-in or simple question.' },
+        'mentorship-qa': { id: 'mentorship-qa', name: 'Project Mentorship & Q&A', duration: 10, desc: 'Targeted feedback on a problem or question.' },
+        'tech-consult': { id: 'tech-consult', name: 'Technical & Architecture Consultation', duration: 15, desc: 'In-depth review or discussion.' },
+        'collab-strategy': { id: 'collab-strategy', name: 'Strategy & Planning', duration: 15, desc: 'Long-term planning or project strategy.' }
+      }
+    };
+
+    let sessionPassword = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadLocalConfig();
+      const savedAuth = sessionStorage.getItem('admin_authenticated');
+      const savedPass = sessionStorage.getItem('admin_session_pass');
+      if (savedAuth === 'true' && savedPass) {
+        sessionPassword = savedPass;
+        showDashboard();
+      }
+    });
+
+    function loadLocalConfig() {
+      try {
+        const saved = localStorage.getItem('wf_calendar_config');
+        if (saved) {
+          currentConfig = Object.assign(currentConfig, JSON.parse(saved));
+        }
+      } catch (e) {
+        console.warn('Could not read config from localStorage', e);
+      }
+    }
+
+    function saveLocalConfig() {
+      try {
+        localStorage.setItem('wf_calendar_config', JSON.stringify(currentConfig));
+      } catch (e) {
+        console.warn('Could not save config to localStorage', e);
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const enteredPass = document.getElementById('admin-pass').value.trim();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const origText = submitBtn.innerText;
+      submitBtn.innerText = 'Verifying...';
+      submitBtn.setAttribute('disabled', 'true');
+
+      // Check against Apps Script if available
+      if (APPS_SCRIPT_WEBAPP_URL && !APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) {
+        try {
+          const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'verifyAdmin', password: enteredPass })
+          });
+          const json = await resp.json();
+          if (json.success) {
+            sessionPassword = enteredPass;
+            sessionStorage.setItem('admin_authenticated', 'true');
+            sessionStorage.setItem('admin_session_pass', enteredPass);
+            showDashboard();
+            submitBtn.innerText = origText;
+            submitBtn.removeAttribute('disabled');
+            return;
+          } else {
+            showToast(json.error || 'Incorrect password.');
+            submitBtn.innerText = origText;
+            submitBtn.removeAttribute('disabled');
+            return;
+          }
+        } catch (err) {
+          console.warn('Remote auth check failed, checking locally', err);
+        }
+      }
+
+      // Local fallback
+      if (enteredPass === currentConfig.adminPass) {
+        sessionPassword = enteredPass;
+        sessionStorage.setItem('admin_authenticated', 'true');
+        sessionStorage.setItem('admin_session_pass', enteredPass);
+        showDashboard();
+      } else {
+        showToast('Incorrect password.');
+      }
+      submitBtn.innerText = origText;
+      submitBtn.removeAttribute('disabled');
+    }
+
+    function handleLogout() {
+      sessionPassword = '';
+      sessionStorage.removeItem('admin_authenticated');
+      sessionStorage.removeItem('admin_session_pass');
+      document.getElementById('dashboard-view').style.display = 'none';
+      document.getElementById('login-view').style.display = 'block';
+    }
+
+    function showDashboard() {
+      document.getElementById('login-view').style.display = 'none';
+      document.getElementById('dashboard-view').style.display = 'block';
+
+      // Load config into inputs
+      document.getElementById('cal-id').value = currentConfig.calendarNameOrId || '129th Ward Meetings';
+      document.getElementById('buffer-min').value = String(currentConfig.bufferMinutes !== undefined ? currentConfig.bufferMinutes : 0);
+      document.getElementById('cluster-min').value = String(currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15);
+      renderWindowsList();
+      renderTypesList();
+
+      fetchRemoteConfig();
+    }
+
+    async function fetchRemoteConfig() {
+      if (!APPS_SCRIPT_WEBAPP_URL || APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) return;
+      try {
+        const res = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getConfig&password=${encodeURIComponent(sessionPassword)}`);
+        const json = await res.json();
+        if (json.success && json.config) {
+          currentConfig = Object.assign(currentConfig, json.config);
+          document.getElementById('cal-id').value = currentConfig.calendarNameOrId;
+          document.getElementById('buffer-min').value = String(currentConfig.bufferMinutes !== undefined ? currentConfig.bufferMinutes : 0);
+          document.getElementById('cluster-min').value = String(currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15);
+          renderWindowsList();
+          renderTypesList();
+          saveLocalConfig();
+        }
+      } catch (err) {
+        console.warn('Remote config fetch failed, using local', err);
+      }
+    }
+
+    function renderWindowsList() {
+      const container = document.getElementById('windows-list');
+      container.innerHTML = '';
+
+      if (!currentConfig.windows || currentConfig.windows.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 12px 0;">No availability windows defined.</div>';
+        return;
+      }
+
+      currentConfig.windows.forEach((win, index) => {
+        const card = document.createElement('div');
+        card.className = 'window-card';
+        card.innerHTML = `
+          <div class="window-info">
+            <div class="window-day">${DAY_NAMES[win.day]}</div>
+            <div class="window-time">${formatTimeStr(win.start)} – ${formatTimeStr(win.end)}</div>
+          </div>
+          <button type="button" class="btn btn-danger" onclick="deleteWindow(${index})">
+            Remove
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderTypesList() {
+      const container = document.getElementById('types-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!currentConfig.meetingTypes) {
+        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 12px 0;">No meeting types defined.</div>';
+        return;
+      }
+
+      // Ensure meetingTypes is an array for reliable ordering
+      const list = Array.isArray(currentConfig.meetingTypes)
+        ? currentConfig.meetingTypes
+        : Object.keys(currentConfig.meetingTypes).map(k => currentConfig.meetingTypes[k]);
+
+      currentConfig.meetingTypes = list;
+
+      if (list.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 12px 0;">No meeting types defined.</div>';
+        return;
+      }
+
+      list.forEach((mt, idx) => {
+        const card = document.createElement('div');
+        card.className = 'window-card';
+        card.innerHTML = `
+          <div class="window-info">
+            <div class="window-day">
+              <span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: rgba(99,102,241,0.2); color: var(--accent-1); font-size: 0.75rem; text-align: center; line-height: 22px; margin-right: 6px;">${idx + 1}</span>
+              ${mt.name} 
+              <span style="font-size: 0.8rem; font-weight: 500; color: var(--accent-1); margin-left: 6px;">(${mt.duration} mins)</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-left: 28px;">${mt.desc || ''}</div>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="moveMeetingType(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity: 0.3;"' : ''} title="Move Up">
+              ▲
+            </button>
+            <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="moveMeetingType(${idx}, 1)" ${idx === list.length - 1 ? 'disabled style="opacity: 0.3;"' : ''} title="Move Down">
+              ▼
+            </button>
+            <button type="button" class="btn btn-danger" onclick="deleteMeetingType(${idx})" style="padding: 4px 10px;">
+              Remove
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function moveMeetingType(index, direction) {
+      if (!Array.isArray(currentConfig.meetingTypes)) {
+        currentConfig.meetingTypes = Object.values(currentConfig.meetingTypes);
+      }
+      const list = currentConfig.meetingTypes;
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= list.length) return;
+
+      const temp = list[index];
+      list[index] = list[targetIndex];
+      list[targetIndex] = temp;
+
+      renderTypesList();
+      showToast('Order updated. Click "Save Changes" to apply.');
+    }
+
+    function addMeetingTypeFromForm() {
+      const nameInput = document.getElementById('new-type-name');
+      const durInput = document.getElementById('new-type-dur');
+      const descInput = document.getElementById('new-type-desc');
+
+      const name = nameInput.value.trim();
+      const duration = parseInt(durInput.value, 10);
+      const desc = descInput.value.trim();
+
+      if (!name || !duration || duration <= 0) {
+        showToast('Please provide a valid meeting title and duration');
+        return;
+      }
+
+      const id = 'type-' + Date.now();
+      if (!Array.isArray(currentConfig.meetingTypes)) {
+        currentConfig.meetingTypes = currentConfig.meetingTypes ? Object.values(currentConfig.meetingTypes) : [];
+      }
+
+      currentConfig.meetingTypes.push({ id, name, duration, desc });
+
+      nameInput.value = '';
+      descInput.value = '';
+      durInput.value = '15';
+
+      renderTypesList();
+      showToast('Meeting type added. Click "Save Changes" to apply.');
+    }
+
+    function deleteMeetingType(index) {
+      if (!Array.isArray(currentConfig.meetingTypes)) {
+        currentConfig.meetingTypes = Object.values(currentConfig.meetingTypes);
+      }
+      currentConfig.meetingTypes.splice(index, 1);
+      renderTypesList();
+      showToast('Removed meeting type. Click "Save Changes" to apply.');
+    }
+
+    function formatTimeStr(time24) {
+      const [h, m] = time24.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const hr = h % 12 || 12;
+      return `${hr}:${m < 10 ? '0' + m : m} ${ampm}`;
+    }
+
+    function addWindowFromForm() {
+      const day = parseInt(document.getElementById('new-day').value, 10);
+      const start = document.getElementById('new-start').value;
+      const end = document.getElementById('new-end').value;
+
+      if (!start || !end) {
+        showToast('Please specify start and end time');
+        return;
+      }
+
+      if (start >= end) {
+        showToast('Start time must be before end time');
+        return;
+      }
+
+      currentConfig.windows.push({ day, start, end });
+      renderWindowsList();
+      showToast('Window added. Click "Save Availability Settings" to apply.');
+    }
+
+    function deleteWindow(index) {
+      currentConfig.windows.splice(index, 1);
+      renderWindowsList();
+    }
+
+    async function handleSaveSettings(e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('save-btn');
+      const origBtn = saveBtn.innerText;
+      saveBtn.innerText = 'Saving...';
+      saveBtn.setAttribute('disabled', 'true');
+
+      // 1. Gather form inputs into currentConfig
+      currentConfig.calendarNameOrId = document.getElementById('cal-id').value.trim();
+      currentConfig.bufferMinutes = parseInt(document.getElementById('buffer-min').value, 10) || 0;
+      currentConfig.clusterWindowMinutes = parseInt(document.getElementById('cluster-min').value, 10) || 0;
+
+      const newPass = document.getElementById('new-pass').value.trim();
+
+      // 2. Capture the existing session password to authorize the request
+      const authPassword = sessionPassword;
+
+      // 3. Build the payload, separating authorization from the new password request
+      const payload = {
+        action: 'saveConfig',
+        password: authPassword, // Sent to the backend to prove authorization
+        config: currentConfig
+      };
+
+      if (newPass) {
+        payload.newPassword = newPass; // Sent separately so the backend can update it safely
+      }
+
+      // 4. Sync to Apps Script backend with authentication (Executed ONCE)
+      if (APPS_SCRIPT_WEBAPP_URL && !APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) {
+        try {
+          const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          const json = await resp.json();
+
+          if (!json.success) {
+            showToast('Warning: ' + (json.error || 'Backend rejected save'));
+            saveBtn.innerText = origBtn;
+            saveBtn.removeAttribute('disabled');
+            return;
+          }
+        } catch (err) {
+          console.error('Error syncing config to Apps Script:', err);
+          showToast('Error connecting to backend.');
+          saveBtn.innerText = origBtn;
+          saveBtn.removeAttribute('disabled');
+          return;
+        }
+      }
+
+      // 5. Update local session states if a new password was accepted
+      if (newPass) {
+        currentConfig.adminPass = newPass;
+        sessionPassword = newPass;
+        sessionStorage.setItem('admin_session_pass', newPass);
+        document.getElementById('new-pass').value = '';
+      }
+
+      // 6. Save locally and reset button state
+      saveLocalConfig();
+
+      saveBtn.innerText = origBtn;
+      saveBtn.removeAttribute('disabled');
+      showToast('Availability settings updated successfully!');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+</body>
+
+</html>
