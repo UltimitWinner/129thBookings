@@ -599,8 +599,12 @@
     async function fetchRemoteConfig() {
       if (!APPS_SCRIPT_WEBAPP_URL || APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) return;
       try {
-        const res = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getConfig&password=${encodeURIComponent(sessionPassword)}`);
-        const json = await res.json();
+        const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getConfig', password: sessionPassword })
+        });
+        const json = await resp.json();
         if (json.success && json.config) {
           currentConfig = Object.assign(currentConfig, json.config);
           document.getElementById('cal-id').value = currentConfig.calendarNameOrId;
