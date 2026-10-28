@@ -5,12 +5,11 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
-  
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description"
-    content="Schedule an appointment for the 129th Ward. Choose meeting type, date, and time." />
+  <meta name="description" content="Schedule an appointment for the 129th Ward. Choose meeting type, date, and time." />
   <title>Schedule an Appointment | by Wesley Forsberg</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1528,9 +1527,6 @@
             currentConfig = Object.assign(currentConfig, parsed);
             meetingTypes = currentConfig.meetingTypes;
           }
-          if (Array.isArray(parsed.windows) && parsed.windows.length > 0) {
-            activateAvailabilityWindows = parsed.windows;
-          }
         }
       } catch (e) {
         console.warn('Could not read config from localStorage', e);
@@ -1545,14 +1541,9 @@
           // Note: Make sure your Apps Script doGet() handles action=getConfig publicly
           const resp = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getConfig`);
           const json = await resp.json();
-          if (json.success && json.config) {
+          if (json.success && json.config && json.config.meetingTypes) {
             currentConfig = Object.assign(currentConfig, json.config);
-            if (json.config.meetingTypes) {
-              meetingTypes = json.config.meetingTypes;
-            }
-            if (Array.isArray(json.config.windows)) {
-              activeAvailabilityWindows = json.config.windows;
-            }
+            meetingTypes = currentConfig.meetingTypes;
 
             // Cache it locally
             localStorage.setItem('wf_calendar_config', JSON.stringify(currentConfig));
@@ -1913,14 +1904,26 @@
       const isoDate = `${yyyy}-${mm}-${dd}`;
       const duration = selectedMeeting ? selectedMeeting.duration : 15;
 
-      // Generate default window start time as fallback
+      // Generate default window start times as fallback (at start time and within cluster window)
       const matchingWindows = activeAvailabilityWindows.filter(w => w.day === date.getDay());
       let slotsToDisplay = [];
+      const clusterMinutes = currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15;
       matchingWindows.forEach(w => {
-        const [h, m] = w.start.split(':').map(Number);
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        const hr = h % 12 || 12;
-        slotsToDisplay.push(`${hr < 10 ? '0' + hr : hr}:${m < 10 ? '0' + m : m} ${ampm}`);
+        const [startH, startM] = w.start.split(':').map(Number);
+        const [endH, endM] = w.end.split(':').map(Number);
+        const winStartMinutes = startH * 60 + startM;
+        const winEndMinutes = endH * 60 + endM;
+
+        for (let offset = 0; offset <= clusterMinutes; offset += 5) {
+          if (winStartMinutes + offset + duration <= winEndMinutes) {
+            const totalMins = winStartMinutes + offset;
+            const h = Math.floor(totalMins / 60);
+            const m = totalMins % 60;
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const hr = h % 12 || 12;
+            slotsToDisplay.push(`${hr < 10 ? '0' + hr : hr}:${m < 10 ? '0' + m : m} ${ampm}`);
+          }
+        }
       });
 
       // If connected to Google Apps Script backend, fetch real-time free slots
