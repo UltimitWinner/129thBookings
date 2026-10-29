@@ -1796,7 +1796,36 @@
 
     // Step 2: Interactive Calendar
     function initCalendar() {
+      // Helper to update navigation button disabled states and styling
+      function updateNavButtonStates() {
+        const today = new Date();
+        const maxAllowed = new Date();
+        maxAllowed.setMonth(maxAllowed.getMonth() + 1);
+
+        const prevBtn = document.getElementById('prev-month-btn');
+        const nextBtn = document.getElementById('next-month-btn');
+
+        // Disable 'prev' if current view is <= today's month/year
+        if (currentCalYear < today.getFullYear() || (currentCalYear === today.getFullYear() && currentCalMonth <= today.getMonth())) {
+          prevBtn.disabled = true;
+          prevBtn.classList.add('disabled');
+        } else {
+          prevBtn.disabled = false;
+          prevBtn.classList.remove('disabled');
+        }
+
+        // Disable 'next' if current view is >= maxAllowed month/year
+        if (currentCalYear > maxAllowed.getFullYear() || (currentCalYear === maxAllowed.getFullYear() && currentCalMonth >= maxAllowed.getMonth())) {
+          nextBtn.disabled = true;
+          nextBtn.classList.add('disabled');
+        } else {
+          nextBtn.disabled = false;
+          nextBtn.classList.remove('disabled');
+        }
+      }
+
       renderCalendar(currentCalMonth, currentCalYear);
+      updateNavButtonStates();
 
       document.getElementById('prev-month-btn').addEventListener('click', () => {
         const today = new Date();
@@ -1810,15 +1839,23 @@
           currentCalYear--;
         }
         renderCalendar(currentCalMonth, currentCalYear);
+        updateNavButtonStates();
       });
 
       document.getElementById('next-month-btn').addEventListener('click', () => {
+        const maxAllowed = new Date();
+        maxAllowed.setMonth(maxAllowed.getMonth() + 1);
+        // Prevent going past the 1-month limit
+        if (currentCalYear === maxAllowed.getFullYear() && currentCalMonth >= maxAllowed.getMonth()) {
+          return;
+        }
         currentCalMonth++;
         if (currentCalMonth > 11) {
           currentCalMonth = 0;
           currentCalYear++;
         }
         renderCalendar(currentCalMonth, currentCalYear);
+        updateNavButtonStates();
       });
     }
 
@@ -1836,6 +1873,11 @@
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+
+      // Define max date: exactly 1 month out from today
+      const maxDate = new Date();
+      maxDate.setMonth(maxDate.getMonth() + 1);
+      maxDate.setHours(0, 0, 0, 0);
 
       // Empty cells before start of month
       for (let i = 0; i < firstDayOfMonth; i++) {
@@ -1856,13 +1898,14 @@
         const dayOfWeek = cellDate.getDay();
         const hasWindowOnDay = activeAvailabilityWindows.some(w => w.day === dayOfWeek);
         const isPast = cellDate < today;
+        const isBeyondMax = cellDate > maxDate;
 
         if (cellDate.getTime() === today.getTime()) {
           dayEl.classList.add('today');
         }
 
         // Only allow days that have active availability windows configured (e.g. Sundays & Wednesdays)
-        if (isPast || !hasWindowOnDay) {
+        if (isPast || isBeyondMax || !hasWindowOnDay) {
           dayEl.classList.add('disabled');
         } else {
           // If already selected

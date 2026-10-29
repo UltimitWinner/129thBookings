@@ -119,6 +119,7 @@
     input[type="text"],
     input[type="password"],
     input[type="time"],
+    input[type="number"],
     select {
       width: 100%;
       padding: 12px 14px;
@@ -209,6 +210,7 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
+      flex: 1;
     }
 
     .window-day {
@@ -633,12 +635,67 @@
             <div class="window-day">${DAY_NAMES[win.day]}</div>
             <div class="window-time">${formatTimeStr(win.start)} – ${formatTimeStr(win.end)}</div>
           </div>
-          <button type="button" class="btn btn-danger" onclick="deleteWindow(${index})">
-            Remove
-          </button>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <button type="button" class="btn btn-secondary" onclick="editWindow(${index})" style="padding: 6px 12px; font-size: 0.8rem;">
+              Edit
+            </button>
+            <button type="button" class="btn btn-danger" onclick="deleteWindow(${index})">
+              Remove
+            </button>
+          </div>
         `;
         container.appendChild(card);
       });
+    }
+
+    function editWindow(index) {
+      const win = currentConfig.windows[index];
+      const container = document.getElementById('windows-list');
+      const card = container.children[index];
+
+      card.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size: 0.75rem;">Day</label>
+              <select id="edit-win-day-${index}">
+                ${DAY_NAMES.map((d, i) => `<option value="${i}" ${i === win.day ? 'selected' : ''}>${d}</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">Start</label>
+              <input type="time" id="edit-win-start-${index}" value="${win.start}" />
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">End</label>
+              <input type="time" id="edit-win-end-${index}" value="${win.end}" />
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="renderWindowsList()" style="padding: 4px 10px; font-size: 0.75rem;">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="saveEditedWindow(${index})" style="padding: 4px 12px; font-size: 0.75rem; width: auto;">Save</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveEditedWindow(index) {
+      const day = parseInt(document.getElementById(`edit-win-day-${index}`).value, 10);
+      const start = document.getElementById(`edit-win-start-${index}`).value;
+      const end = document.getElementById(`edit-win-end-${index}`).value;
+
+      if (!start || !end) {
+        showToast('Please specify start and end time');
+        return;
+      }
+      if (start >= end) {
+        showToast('Start time must be before end time');
+        return;
+      }
+
+      currentConfig.windows[index] = { day, start, end };
+      renderWindowsList();
+      showToast('Window updated. Click "Save Changes" to apply.');
     }
 
     function renderTypesList() {
@@ -682,6 +739,9 @@
             <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="moveMeetingType(${idx}, 1)" ${idx === list.length - 1 ? 'disabled style="opacity: 0.3;"' : ''} title="Move Down">
               ▼
             </button>
+            <button type="button" class="btn btn-secondary" onclick="editMeetingType(${idx})" style="padding: 4px 10px; font-size: 0.75rem;">
+              Edit
+            </button>
             <button type="button" class="btn btn-danger" onclick="deleteMeetingType(${idx})" style="padding: 4px 10px;">
               Remove
             </button>
@@ -689,6 +749,59 @@
         `;
         container.appendChild(card);
       });
+    }
+
+    function editMeetingType(index) {
+      if (!Array.isArray(currentConfig.meetingTypes)) {
+        currentConfig.meetingTypes = Object.values(currentConfig.meetingTypes);
+      }
+      const mt = currentConfig.meetingTypes[index];
+      const container = document.getElementById('types-list');
+      const card = container.children[index];
+
+      card.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size: 0.75rem;">Title / Name</label>
+              <input type="text" id="edit-type-name-${index}" value="${mt.name}" />
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">Duration (Mins)</label>
+              <input type="number" id="edit-type-dur-${index}" value="${mt.duration}" min="5" step="5" />
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem;">Short Description</label>
+            <input type="text" id="edit-type-desc-${index}" value="${mt.desc || ''}" />
+          </div>
+          <div style="display: flex; gap: 8px; justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="renderTypesList()" style="padding: 4px 10px; font-size: 0.75rem;">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="saveEditedMeetingType(${index})" style="padding: 4px 12px; font-size: 0.75rem; width: auto;">Save</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveEditedMeetingType(index) {
+      if (!Array.isArray(currentConfig.meetingTypes)) {
+        currentConfig.meetingTypes = Object.values(currentConfig.meetingTypes);
+      }
+      const name = document.getElementById(`edit-type-name-${index}`).value.trim();
+      const duration = parseInt(document.getElementById(`edit-type-dur-${index}`).value, 10);
+      const desc = document.getElementById(`edit-type-desc-${index}`).value.trim();
+
+      if (!name || !duration || duration <= 0) {
+        showToast('Please provide a valid meeting title and duration');
+        return;
+      }
+
+      currentConfig.meetingTypes[index].name = name;
+      currentConfig.meetingTypes[index].duration = duration;
+      currentConfig.meetingTypes[index].desc = desc;
+
+      renderTypesList();
+      showToast('Meeting type updated. Click "Save Changes" to apply.');
     }
 
     function moveMeetingType(index, direction) {
@@ -769,7 +882,7 @@
 
       currentConfig.windows.push({ day, start, end });
       renderWindowsList();
-      showToast('Window added. Click "Save Availability Settings" to apply.');
+      showToast('Window added. Click "Save Changes" to apply.');
     }
 
     function deleteWindow(index) {
