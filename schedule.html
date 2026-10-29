@@ -1383,6 +1383,10 @@
         </div>
 
         <form id="booking-form" onsubmit="handleBookingSubmit(event)">
+          <!-- Anti-spam honeypot (invisible to humans) -->
+          <div style="display:none !important;" aria-hidden="true">
+            <input type="text" id="website_hp" name="website_hp" tabindex="-1" autocomplete="off" />
+          </div>
           <div class="form-row">
             <div class="form-group">
               <label for="attendee-name">Your Full Name <span class="req">*</span></label>
@@ -1496,7 +1500,7 @@
     const HOST_NAME = 'James Christensen';
 
     // Paste your deployed Google Apps Script Web App URL here:
-    const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9w0cYCICpM8MhyJG1TlyqE3ngsfb8TIE0S_SCrDYk7lzCI-_7Jrr0OBp8yIb96tsR/exec';
+    const APPS_SCRIPT_WEBAPP_URL = 'https://ward-scheduler-proxy.forsberginventor.workers.dev';
 
     let currentStep = 1;
     let selectedMeetingIds = new Set();
@@ -1984,6 +1988,7 @@
       event.preventDefault();
 
       const name = document.getElementById('attendee-name').value.trim();
+      const website_hp = document.getElementById('website_hp')?.value || '';
       const email = document.getElementById('attendee-email').value.trim();
       const phone = document.getElementById('attendee-phone').value.trim();
       const location = document.getElementById('meeting-location-pref').value;
@@ -2030,6 +2035,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain prevents CORS preflight in Apps Script
             body: JSON.stringify({
+              website_hp,
               name,
               email,
               phone,

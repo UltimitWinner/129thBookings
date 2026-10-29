@@ -1,0 +1,5 @@
+# Ignore backend script reference and secrets
+.backend.txt
+.env
+*.local
+

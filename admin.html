@@ -302,7 +302,7 @@
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label for="admin-pass">Admin Password</label>
-          <input type="password" id="admin-pass" placeholder="Enter password " required />
+          <input type="password" id="admin-pass" placeholder="Enter password" required />
           <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
             Password is case sensitive.
           </div>
@@ -478,14 +478,13 @@
   <div id="toast" class="toast">Settings Saved</div>
 
   <script>
-    const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbw9w0cYCICpM8MhyJG1TlyqE3ngsfb8TIE0S_SCrDYk7lzCI-_7Jrr0OBp8yIb96tsR/exec';
+    const APPS_SCRIPT_WEBAPP_URL = 'https://ward-scheduler-proxy.forsberginventor.workers.dev';
 
     const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     // Default configuration: Sunday 9:30-11:45 & Wednesday 18:30-21:00
     let currentConfig = {
       calendarNameOrId: '129th Ward Meetings',
-      adminPass: 'admin123',
       bufferMinutes: 0,
       clusterWindowMinutes: 15,
       windows: [
@@ -563,21 +562,17 @@
             return;
           }
         } catch (err) {
-          console.warn('Remote auth check failed, checking locally', err);
+          console.error('Remote auth check failed:', err);
+          showToast('Backend connection failed. Try again.');
+          submitBtn.innerText = origText;
+          submitBtn.removeAttribute('disabled');
+          return;
         }
-      }
-
-      // Local fallback
-      if (enteredPass === currentConfig.adminPass) {
-        sessionPassword = enteredPass;
-        sessionStorage.setItem('admin_authenticated', 'true');
-        sessionStorage.setItem('admin_session_pass', enteredPass);
-        showDashboard();
       } else {
-        showToast('Incorrect password.');
+        showToast('Backend URL is not configured.');
+        submitBtn.innerText = origText;
+        submitBtn.removeAttribute('disabled');
       }
-      submitBtn.innerText = origText;
-      submitBtn.removeAttribute('disabled');
     }
 
     function handleLogout() {
@@ -837,7 +832,6 @@
 
       // 5. Update local session states if a new password was accepted
       if (newPass) {
-        currentConfig.adminPass = newPass;
         sessionPassword = newPass;
         sessionStorage.setItem('admin_session_pass', newPass);
         document.getElementById('new-pass').value = '';
