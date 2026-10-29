@@ -153,10 +153,26 @@
                     </label>
                 </div>
 
+                <!-- AAA Filter Toggle -->
+                <div class="flex items-center gap-2">
+                    <label class="inline-flex items-center gap-2 cursor-pointer bg-slate-950 px-3 py-1.5 rounded-lg border border-emerald-500/40 text-emerald-300 hover:bg-slate-900 transition shadow-sm">
+                        <input 
+                            type="checkbox" 
+                            id="aaaOnlyToggle" 
+                            checked 
+                            onchange="toggleAaaOnly(this.checked)" 
+                            class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700 focus:ring-0 cursor-pointer">
+                        <span class="font-bold flex items-center gap-1.5 text-xs">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>Show Only AAA Successes (&ge; 7.0:1)</span>
+                        </span>
+                    </label>
+                </div>
+
                 <div class="flex items-center gap-2">
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                     <span class="text-slate-300">WCAG 2.1 Criteria:</span>
-                    <span>AAA &ge; 7.0:1</span>
+                    <span class="font-bold text-emerald-400">AAA &ge; 7.0:1</span>
                     <span class="text-slate-600">&bull;</span>
                     <span>AA &ge; 4.5:1</span>
                     <span class="text-slate-600">&bull;</span>
@@ -167,6 +183,46 @@
 
         <!-- Summary KPI Stats -->
         <section id="summaryStats" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></section>
+
+        <!-- Pinned Colors Section (Stored in Local Browser Storage) -->
+        <section id="pinnedSection" class="bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-4 sm:p-6 shadow-2xl backdrop-blur space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 font-bold text-base shadow-sm">
+                        📌
+                    </span>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-base sm:text-lg font-extrabold text-white tracking-tight">Pinned Colors</h2>
+                            <span id="pinnedCountBadge" class="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">0 Pinned</span>
+                        </div>
+                        <p class="text-slate-400 text-xs">Temporarily saved in browser local data &bull; Persists across word searches &amp; reloads</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button 
+                        id="copyAllPinnedBtn"
+                        onclick="copyAllPinnedHexes()" 
+                        class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition">
+                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                        <span>Copy Hexes</span>
+                    </button>
+                    <button 
+                        id="clearAllPinnedBtn"
+                        onclick="clearAllPinned()" 
+                        class="px-3 py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-800/40 text-xs font-semibold flex items-center gap-1.5 transition">
+                        <svg class="w-3.5 h-3.5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <span>Clear Pinned</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pinned Cards Grid -->
+            <div id="pinnedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Rendered dynamically -->
+            </div>
+        </section>
 
         <!-- Main Visual Results Container -->
         <section id="resultsContainer" class="space-y-6">
@@ -521,7 +577,7 @@
         // ==========================================
         // 4. RENDERING & UI GENERATION
         // ==========================================
-        function createColorCard(hexCode, label, word, bgType) {
+        function createColorCard(hexCode, label, word, bgType, algoName = '') {
             const isWhite = bgType === 'white';
             const bgLum = isWhite ? 1.0 : 0.0;
             const textLum = getRelativeLuminance(hexCode);
@@ -529,6 +585,9 @@
             const ratioFormatted = ratioVal.toFixed(2);
             const legibilityScore = calculateLegibilityScore(ratioVal);
             const wcag = getWCAGStatus(ratioVal);
+
+            const cardId = `${algoName || 'Custom'}_${label.replace(/\s+/g, '')}_${bgType}_${hexCode.replace('#', '')}_${word}`;
+            const isItemPinned = isPinned(cardId);
 
             // Container theme styling
             const bgClass = isWhite 
@@ -553,16 +612,39 @@
                             <span class="font-mono-code font-bold text-xs uppercase cursor-pointer hover:underline" onclick="copyToClipboard('${hexCode}', 'Hex code')" title="Click to copy hex">
                                 ${hexCode}
                             </span>
+                            ${algoName ? `<span class="text-[10px] px-1.5 py-0.5 rounded ${isWhite ? 'bg-slate-100 text-slate-600' : 'bg-slate-900 text-slate-400'} font-mono">${algoName}</span>` : ''}
                         </div>
-                        <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border ${badgeStyle}">
-                            ${wcag.badge}
-                        </span>
+                        
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border ${badgeStyle}">
+                                ${wcag.badge}
+                            </span>
+                            <button 
+                                type="button"
+                                data-pin-id="${cardId}"
+                                data-pin-hex="${hexCode}"
+                                data-pin-label="${label}"
+                                data-pin-word="${escapeHtml(word)}"
+                                data-pin-bg="${bgType}"
+                                data-pin-algo="${algoName}"
+                                data-pin-ratio="${ratioFormatted}"
+                                data-pin-score="${legibilityScore}"
+                                onclick="handlePinClick(this)"
+                                class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[11px] font-semibold transition ${isItemPinned ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 hover:bg-indigo-700' : (isWhite ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700')}"
+                                title="${isItemPinned ? 'Unpin (stored in local data)' : 'Pin to local data'}">
+                                <svg class="w-3 h-3 ${isItemPinned ? 'fill-current' : 'fill-none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg>
+                                <span>${isItemPinned ? 'Pinned' : 'Pin'}</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Live Sample Rendering Box -->
                     <div class="py-2 space-y-1">
-                        <div class="text-[11px] uppercase tracking-wider font-semibold ${isWhite ? 'text-slate-400' : 'text-slate-500'}">
-                            Sample Text Preview (${label})
+                        <div class="flex items-center justify-between text-[11px] uppercase tracking-wider font-semibold ${isWhite ? 'text-slate-400' : 'text-slate-500'}">
+                            <span>Sample Text Preview (${label})</span>
+                            <span class="text-[10px] font-mono lowercase opacity-75">${bgType === 'white' ? 'on white #fff' : 'on black #000'}</span>
                         </div>
                         <div class="tracking-tight transition-all font-semibold ${currentSizeClass} truncate" style="color: ${hexCode}">
                             ${escapeHtml(word)}
@@ -608,10 +690,113 @@
             `;
         }
 
-        function renderAlgorithmSection(algo, fullHash, word) {
+        function renderAlgorithmSection(algo, fullHash, word, showOnlyAaa = true) {
             const first6Hex = '#' + fullHash.substring(0, 6).toUpperCase();
             const last6Hex = '#' + fullHash.slice(-6).toUpperCase();
             const middleHash = fullHash.substring(6, fullHash.length - 6);
+
+            // Compute contrast for first6 and last6
+            const lumFirst = getRelativeLuminance(first6Hex);
+            const rFirstWhite = calculateContrast(lumFirst, 1.0);
+            const rFirstBlack = calculateContrast(lumFirst, 0.0);
+
+            const lumLast = getRelativeLuminance(last6Hex);
+            const rLastWhite = calculateContrast(lumLast, 1.0);
+            const rLastBlack = calculateContrast(lumLast, 0.0);
+
+            let contentHtml = '';
+
+            if (showOnlyAaa) {
+                // Collect only combinations passing AAA (>= 7.0:1)
+                const aaaCards = [];
+                if (rFirstWhite >= 7.0) {
+                    aaaCards.push(createColorCard(first6Hex, 'First 6', word, 'white', algo.name));
+                }
+                if (rFirstBlack >= 7.0) {
+                    aaaCards.push(createColorCard(first6Hex, 'First 6', word, 'black', algo.name));
+                }
+                if (rLastWhite >= 7.0) {
+                    aaaCards.push(createColorCard(last6Hex, 'Last 6', word, 'white', algo.name));
+                }
+                if (rLastBlack >= 7.0) {
+                    aaaCards.push(createColorCard(last6Hex, 'Last 6', word, 'black', algo.name));
+                }
+
+                if (aaaCards.length > 0) {
+                    contentHtml = `
+                        <div class="grid grid-cols-1 md:grid-cols-${Math.min(aaaCards.length, 2)} gap-4">
+                            ${aaaCards.join('')}
+                        </div>
+                    `;
+                } else {
+                    const bestRatio = Math.max(rFirstWhite, rFirstBlack, rLastWhite, rLastBlack).toFixed(2);
+                    contentHtml = `
+                        <div class="bg-slate-950/40 border border-dashed border-slate-800 rounded-xl p-4 text-center text-xs text-slate-500">
+                            <span class="inline-block px-2 py-0.5 rounded bg-slate-900 text-slate-400 font-mono text-[11px] mb-1">No AAA Passes (&ge; 7.0:1)</span>
+                            <p>Neither First 6 (<span class="font-mono text-slate-400">${first6Hex}</span>) nor Last 6 (<span class="font-mono text-slate-400">${last6Hex}</span>) reached the 7.0:1 AAA contrast threshold. Best ratio was <strong class="text-slate-400">${bestRatio}:1</strong>.</p>
+                        </div>
+                    `;
+                }
+            } else {
+                // Render standard full 2x2 comparison grid
+                contentHtml = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full shadow" style="background-color: ${first6Hex}"></span>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-200">First 6 Characters</span>
+                                </div>
+                                <span class="font-mono-code font-extrabold text-sm text-indigo-400">${first6Hex}</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-white border border-slate-400"></span>
+                                        On White Background
+                                    </div>
+                                    ${createColorCard(first6Hex, 'First 6', word, 'white', algo.name)}
+                                </div>
+                                <div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-black border border-slate-600"></span>
+                                        On Black Background
+                                    </div>
+                                    ${createColorCard(first6Hex, 'First 6', word, 'black', algo.name)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-4 space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full shadow" style="background-color: ${last6Hex}"></span>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Last 6 Characters</span>
+                                </div>
+                                <span class="font-mono-code font-extrabold text-sm text-cyan-400">${last6Hex}</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-white border border-slate-400"></span>
+                                        On White Background
+                                    </div>
+                                    ${createColorCard(last6Hex, 'Last 6', word, 'white', algo.name)}
+                                </div>
+                                <div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
+                                        <span class="w-2 h-2 rounded-full bg-black border border-slate-600"></span>
+                                        On Black Background
+                                    </div>
+                                    ${createColorCard(last6Hex, 'Last 6', word, 'black', algo.name)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
             return `
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-5">
@@ -644,73 +829,218 @@
                         </div>
                     </div>
 
-                    <!-- 2x2 Comparison Grid (First 6 vs Last 6 on White vs Black) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        
-                        <!-- COLUMN 1: FIRST SIX CHARACTERS -->
-                        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-4 space-y-3">
-                            <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-3 h-3 rounded-full shadow" style="background-color: ${first6Hex}"></span>
-                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-200">First 6 Characters</span>
-                                </div>
-                                <span class="font-mono-code font-extrabold text-sm text-indigo-400">${first6Hex}</span>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
-                                        <span class="w-2 h-2 rounded-full bg-white border border-slate-400"></span>
-                                        On White Background
-                                    </div>
-                                    ${createColorCard(first6Hex, 'First 6', word, 'white')}
-                                </div>
-                                <div>
-                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
-                                        <span class="w-2 h-2 rounded-full bg-black border border-slate-600"></span>
-                                        On Black Background
-                                    </div>
-                                    ${createColorCard(first6Hex, 'First 6', word, 'black')}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- COLUMN 2: LAST SIX CHARACTERS -->
-                        <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-4 space-y-3">
-                            <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-3 h-3 rounded-full shadow" style="background-color: ${last6Hex}"></span>
-                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-200">Last 6 Characters</span>
-                                </div>
-                                <span class="font-mono-code font-extrabold text-sm text-cyan-400">${last6Hex}</span>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
-                                        <span class="w-2 h-2 rounded-full bg-white border border-slate-400"></span>
-                                        On White Background
-                                    </div>
-                                    ${createColorCard(last6Hex, 'Last 6', word, 'white')}
-                                </div>
-                                <div>
-                                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center gap-1">
-                                        <span class="w-2 h-2 rounded-full bg-black border border-slate-600"></span>
-                                        On Black Background
-                                    </div>
-                                    ${createColorCard(last6Hex, 'Last 6', word, 'black')}
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    ${contentHtml}
 
                 </div>
             `;
         }
 
         // ==========================================
-        // 5. MASTER CONTROLLER PIPELINE
+        // 5. LOCAL DATA PINNING ENGINE
+        // ==========================================
+        const PINNED_STORAGE_KEY = 'hash_contrast_pinned_colors';
+
+        function getPinnedColors() {
+            try {
+                const raw = localStorage.getItem(PINNED_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                console.warn('LocalStorage error:', e);
+                return [];
+            }
+        }
+
+        function savePinnedColors(items) {
+            try {
+                localStorage.setItem(PINNED_STORAGE_KEY, JSON.stringify(items));
+            } catch (e) {
+                console.warn('LocalStorage save error:', e);
+            }
+        }
+
+        function isPinned(id) {
+            const list = getPinnedColors();
+            return list.some(item => item.id === id);
+        }
+
+        function togglePin(cardData) {
+            let list = getPinnedColors();
+            const index = list.findIndex(item => item.id === cardData.id);
+
+            if (index >= 0) {
+                list.splice(index, 1);
+                savePinnedColors(list);
+                showToast(`Unpinned ${cardData.hexCode} from local data`);
+            } else {
+                list.unshift({
+                    id: cardData.id,
+                    hexCode: cardData.hexCode,
+                    label: cardData.label,
+                    word: cardData.word,
+                    bgType: cardData.bgType,
+                    algoName: cardData.algoName,
+                    ratio: cardData.ratio,
+                    score: cardData.score,
+                    timestamp: Date.now()
+                });
+                savePinnedColors(list);
+                showToast(`📌 Pinned ${cardData.hexCode} (${cardData.bgType === 'white' ? 'on White' : 'on Black'}) to local data!`);
+            }
+
+            renderPinnedSection();
+            processCurrentWord();
+        }
+
+        function unpinById(id) {
+            let list = getPinnedColors();
+            const item = list.find(p => p.id === id);
+            list = list.filter(p => p.id !== id);
+            savePinnedColors(list);
+            showToast(`Unpinned ${item ? item.hexCode : 'color'} from local data`);
+            renderPinnedSection();
+            processCurrentWord();
+        }
+
+        function clearAllPinned() {
+            const list = getPinnedColors();
+            if (list.length === 0) {
+                showToast('No pinned colors to clear');
+                return;
+            }
+            if (confirm('Clear all pinned colors from local browser data?')) {
+                savePinnedColors([]);
+                showToast('All pinned colors cleared from local data');
+                renderPinnedSection();
+                processCurrentWord();
+            }
+        }
+
+        function copyAllPinnedHexes() {
+            const list = getPinnedColors();
+            if (list.length === 0) {
+                showToast('No pinned colors to copy');
+                return;
+            }
+            const hexes = list.map(item => item.hexCode).join(', ');
+            copyToClipboard(hexes, `${list.length} pinned hex codes`);
+        }
+
+        function handlePinClick(btn) {
+            const cardId = btn.getAttribute('data-pin-id');
+            const hex = btn.getAttribute('data-pin-hex');
+            const label = btn.getAttribute('data-pin-label');
+            const word = btn.getAttribute('data-pin-word');
+            const bg = btn.getAttribute('data-pin-bg');
+            const algo = btn.getAttribute('data-pin-algo');
+            const ratio = parseFloat(btn.getAttribute('data-pin-ratio'));
+            const score = parseInt(btn.getAttribute('data-pin-score'), 10);
+
+            togglePin({
+                id: cardId,
+                hexCode: hex,
+                label: label,
+                word: word,
+                bgType: bg,
+                algoName: algo,
+                ratio: ratio,
+                score: score
+            });
+        }
+
+        function renderPinnedCard(item) {
+            const isWhite = item.bgType === 'white';
+            const wcag = getWCAGStatus(item.ratio);
+            const bgClass = isWhite 
+                ? 'bg-white text-slate-900 border-slate-200 shadow-md' 
+                : 'bg-black text-white border-slate-800 shadow-md';
+            const badgeStyle = isWhite ? wcag.badgeLight : wcag.color;
+
+            return `
+                <div class="rounded-xl border p-4 flex flex-col justify-between gap-3 transition hover:ring-1 ${isWhite ? 'hover:ring-slate-400' : 'hover:ring-slate-700'} ${bgClass}">
+                    <div class="flex items-center justify-between gap-2 border-b ${isWhite ? 'border-slate-100 pb-2.5' : 'border-slate-900 pb-2.5'}">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-block w-4 h-4 rounded-md shadow-sm border ${isWhite ? 'border-black/10' : 'border-white/20'}" style="background-color: ${item.hexCode}"></span>
+                            <span class="font-mono-code font-bold text-xs uppercase cursor-pointer hover:underline" onclick="copyToClipboard('${item.hexCode}', 'Hex code')" title="Click to copy hex">
+                                ${item.hexCode}
+                            </span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded ${isWhite ? 'bg-slate-100 text-slate-700' : 'bg-slate-900 text-slate-300'} font-mono">${item.algoName || ''}</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${badgeStyle}">
+                                ${wcag.badge}
+                            </span>
+                            <button 
+                                type="button"
+                                onclick="unpinById('${item.id}')"
+                                class="px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/30 transition flex items-center gap-1"
+                                title="Remove pin from local data">
+                                ✕ <span>Unpin</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
+                            <span>Target: "${escapeHtml(item.word)}" &bull; ${item.label}</span>
+                            <span class="font-mono lowercase">${item.bgType === 'white' ? 'on white' : 'on black'}</span>
+                        </div>
+                        <div class="tracking-tight font-semibold ${currentSizeClass} truncate" style="color: ${item.hexCode}">
+                            ${escapeHtml(item.word)}
+                        </div>
+                        <div class="text-xs truncate font-mono-code opacity-80" style="color: ${item.hexCode}">
+                            The quick brown fox 0123456789
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t ${isWhite ? 'border-slate-100 text-slate-600' : 'border-slate-900 text-slate-400'} flex items-center justify-between text-xs">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block">Contrast</span>
+                            <span class="font-mono-code font-extrabold text-sm ${isWhite ? 'text-slate-900' : 'text-white'}">
+                                ${item.ratio.toFixed(2)}:1
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block">Score</span>
+                            <span class="font-mono-code font-extrabold text-sm ${isWhite ? 'text-slate-900' : 'text-white'}">
+                                ${item.score}/100
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPinnedSection() {
+            const list = getPinnedColors();
+            const countBadge = document.getElementById('pinnedCountBadge');
+            const grid = document.getElementById('pinnedGrid');
+            
+            if (countBadge) {
+                countBadge.textContent = `${list.length} Pinned`;
+            }
+
+            if (!grid) return;
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-6 px-4 text-center border border-dashed border-slate-800 rounded-xl bg-slate-950/40">
+                        <p class="text-xs text-slate-400 font-semibold">No pinned colors yet</p>
+                        <p class="text-[11px] text-slate-500 mt-1">Click the <strong class="text-indigo-400">Pin</strong> button on any AAA card below to save it in your browser's local data.</p>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = list.map(item => renderPinnedCard(item)).join('');
+            }
+        }
+
+        function toggleAaaOnly(checked) {
+            processCurrentWord();
+            showToast(checked ? 'Showing only AAA successes (≥ 7.0:1)' : 'Showing all contrast results');
+        }
+
+        // ==========================================
+        // 6. MASTER CONTROLLER PIPELINE
         // ==========================================
         async function processCurrentWord() {
             const wordInput = document.getElementById('wordInput');
@@ -718,6 +1048,7 @@
             const selectedAlgo = document.getElementById('hashSelect').value;
             const container = document.getElementById('resultsContainer');
             const spinner = document.getElementById('spinner');
+            const showOnlyAaa = document.getElementById('aaaOnlyToggle') ? document.getElementById('aaaOnlyToggle').checked : true;
 
             spinner.classList.remove('hidden');
 
@@ -727,82 +1058,102 @@
 
             let htmlBuffer = '';
             let totalTested = 0;
-            let whitePassCount = 0;
-            let blackPassCount = 0;
+            let aaaPassCount = 0;
+            let aaaWhiteCount = 0;
+            let aaaBlackCount = 0;
             let bestContrast = { ratio: 0, label: '', bg: '', hex: '' };
 
             for (const algo of algosToRun) {
                 const fullHash = await computeHash(algo.id, word);
-                htmlBuffer += renderAlgorithmSection(algo, fullHash, word);
+                htmlBuffer += renderAlgorithmSection(algo, fullHash, word, showOnlyAaa);
 
                 // Analyze stats
-                const fHex = '#' + fullHash.substring(0, 6);
-                const lHex = '#' + fullHash.slice(-6);
+                const fHex = '#' + fullHash.substring(0, 6).toUpperCase();
+                const lHex = '#' + fullHash.slice(-6).toUpperCase();
 
-                [fHex, lHex].forEach(hex => {
-                    const lum = getRelativeLuminance(hex);
+                [ { hex: fHex, label: `${algo.name} (First 6)` }, { hex: lHex, label: `${algo.name} (Last 6)` } ].forEach(item => {
+                    const lum = getRelativeLuminance(item.hex);
                     const rWhite = calculateContrast(lum, 1.0);
                     const rBlack = calculateContrast(lum, 0.0);
 
-                    totalTested++;
-                    if (rWhite >= 4.5) whitePassCount++;
-                    if (rBlack >= 4.5) blackPassCount++;
+                    totalTested += 2;
+                    if (rWhite >= 7.0) { aaaPassCount++; aaaWhiteCount++; }
+                    if (rBlack >= 7.0) { aaaPassCount++; aaaBlackCount++; }
 
                     if (rWhite > bestContrast.ratio) {
-                        bestContrast = { ratio: rWhite, label: `${algo.name}`, bg: 'White', hex };
+                        bestContrast = { ratio: rWhite, label: item.label, bg: 'White', hex: item.hex };
                     }
                     if (rBlack > bestContrast.ratio) {
-                        bestContrast = { ratio: rBlack, label: `${algo.name}`, bg: 'Black', hex };
+                        bestContrast = { ratio: rBlack, label: item.label, bg: 'Black', hex: item.hex };
                     }
                 });
             }
 
             container.innerHTML = htmlBuffer;
-            renderSummaryKPIs(totalTested, whitePassCount, blackPassCount, bestContrast, word);
+            const pinnedCount = getPinnedColors().length;
+            renderSummaryKPIs(totalTested, aaaPassCount, aaaWhiteCount, aaaBlackCount, bestContrast, word, pinnedCount);
 
             spinner.classList.add('hidden');
         }
 
-        function renderSummaryKPIs(total, whitePass, blackPass, best, word) {
+        function renderSummaryKPIs(totalTested, aaaPassCount, aaaWhiteCount, aaaBlackCount, bestContrast, word, pinnedCount) {
             const statsContainer = document.getElementById('summaryStats');
-            const whitePct = Math.round((whitePass / total) * 100);
-            const blackPct = Math.round((blackPass / total) * 100);
+            const totalHexes = totalTested / 2;
+            const aaaPct = totalHexes > 0 ? Math.round((aaaPassCount / totalHexes) * 100) : 0;
 
             statsContainer.innerHTML = `
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Current Target</span>
                     <div class="text-sm font-mono-code font-bold text-white truncate mt-0.5">"${escapeHtml(word)}"</div>
-                    <span class="text-[11px] text-slate-500">${total} hex colors extracted</span>
+                    <span class="text-[11px] text-slate-500">${totalHexes} extracted hex digests</span>
                 </div>
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Pass Rate on White</span>
-                    <div class="text-base font-extrabold text-white mt-0.5">${whitePass}/${total} <span class="text-xs font-normal text-slate-400">(${whitePct}%)</span></div>
-                    <span class="text-[11px] ${whitePct >= 50 ? 'text-emerald-400' : 'text-amber-400'}">&ge; 4.5:1 AA standard</span>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Pass Rate on Black</span>
-                    <div class="text-base font-extrabold text-white mt-0.5">${blackPass}/${total} <span class="text-xs font-normal text-slate-400">(${blackPct}%)</span></div>
-                    <span class="text-[11px] ${blackPct >= 50 ? 'text-emerald-400' : 'text-amber-400'}">&ge; 4.5:1 AA standard</span>
-                </div>
-
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Best Contrast Pair</span>
-                    <div class="text-sm font-mono-code font-extrabold text-indigo-400 mt-0.5 flex items-center gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${best.hex}"></span>
-                        <span>${best.ratio.toFixed(2)}:1</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        AAA Successes
+                    </span>
+                    <div class="text-base font-extrabold text-white mt-0.5">
+                        ${aaaPassCount} <span class="text-xs font-normal text-slate-400">(${aaaPct}% of hexes)</span>
                     </div>
-                    <span class="text-[11px] text-slate-400">${best.hex} on ${best.bg}</span>
+                    <span class="text-[11px] text-emerald-400 font-medium">&ge; 7.0:1 AAA Standard</span>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">AAA Background Split</span>
+                    <div class="text-sm font-mono-code font-bold text-white mt-0.5 flex items-center gap-2">
+                        <span class="flex items-center gap-1 text-slate-200">
+                            <span class="w-2 h-2 rounded-full bg-white border border-slate-400"></span> ${aaaWhiteCount} White
+                        </span>
+                        <span class="text-slate-600">&bull;</span>
+                        <span class="flex items-center gap-1 text-slate-200">
+                            <span class="w-2 h-2 rounded-full bg-black border border-slate-600"></span> ${aaaBlackCount} Black
+                        </span>
+                    </div>
+                    <span class="text-[11px] text-slate-500">Passing 7.0:1 contrast</span>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Best Contrast Pair</span>
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">
+                            ${pinnedCount} Pinned
+                        </span>
+                    </div>
+                    <div class="text-sm font-mono-code font-extrabold text-indigo-400 mt-0.5 flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${bestContrast.hex}"></span>
+                        <span>${bestContrast.ratio.toFixed(2)}:1</span>
+                    </div>
+                    <span class="text-[11px] text-slate-400 truncate block">${bestContrast.hex} on ${bestContrast.bg}</span>
                 </div>
             `;
         }
 
         // ==========================================
-        // 6. UTILITY FUNCTIONS & EVENT HOOKS
+        // 7. UTILITY FUNCTIONS & EVENT HOOKS
         // ==========================================
         function escapeHtml(str) {
-            return str
+            return String(str)
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
@@ -847,6 +1198,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('wordInput');
             
+            // Initialize pinned colors from browser local storage
+            renderPinnedSection();
+
             // Auto run for default preset
             processCurrentWord();
 
