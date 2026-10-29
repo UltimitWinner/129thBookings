@@ -50,9 +50,9 @@
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg);
       background-image:
-        radial-gradient(circle at 10% 15%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 60%);
+        radial-gradient(circle at 10% 15%, rgba(56, 216, 170, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(37, 195, 253, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(85, 219, 128, 0.10) 0%, transparent 60%);
       background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
@@ -100,7 +100,7 @@
       transform: translateX(-50%);
       width: 320px;
       height: 140px;
-      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      /* background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); */
       opacity: 0.35;
       filter: blur(48px);
       border-radius: 50%;
@@ -1062,13 +1062,13 @@
   <div class="container">
     <!-- Header -->
     <header class="glass-card booking-header">
-      <div class="badge-tag">
+      <!-- <div class="badge-tag">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
         Direct Booking Portal
-      </div>
+      </div> -->
       <h1>Meet with Bishop: 129th Ward Meetings</h1>
       <p class="subtext">
         Select a meeting type and choose a time that works for you. If you include your email, you will be sent an
@@ -1303,7 +1303,7 @@
                   <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
               </button>
-              <div class="calendar-month" id="calendar-month-year">October 2026</div>
+              <div class="calendar-month" id="calendar-month-year">Current Month</div>
               <button type="button" class="cal-nav-btn" id="next-month-btn" aria-label="Next Month">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="9 18 15 12 9 6"></polyline>
@@ -1489,7 +1489,9 @@
         onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
         ⚙ Admin Availability Settings
       </a>
-      <p>&copy; 2026 Wesley Forsberg</p>
+      <p
+        style="color: var(--text-muted); font-size: 0.78rem; text-decoration: none; opacity: 0.6; transition: opacity 0.2s;">
+        &copy; 2026 Wesley Forsberg</p>
     </footer>
 
   </div>
