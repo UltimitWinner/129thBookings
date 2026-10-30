@@ -1344,7 +1344,7 @@
             <div class="slots-scroll" id="slots-list">
               <!-- Populated when date clicked -->
               <div style="text-align: center; color: var(--text-muted); font-size: 0.88rem; padding: 40px 10px;">
-                Please select an available weekday from the calendar to view available time slots.
+                Please select an available day from the calendar to view available time slots.
               </div>
             </div>
           </div>
@@ -1919,6 +1919,10 @@
             document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
             dayEl.classList.add('selected');
             selectedDate = cellDate;
+
+            // --- Clear previously selected time slot ---
+            selectedSlot = null;
+
             renderTimeSlots(cellDate);
           });
         }
