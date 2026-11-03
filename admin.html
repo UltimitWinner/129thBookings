@@ -9,280 +9,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Manage Availability and Scheduling Settings for Wesley Forsberg" />
-  <title>Admin Availability Settings | Wesley Forsberg</title>
+  <meta name="description" content="Manage Availability and Scheduling Settings for the 129th Ward" />
+  <title>Admin Availability Settings | 129th Ward Scheduling</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
 
-  <style>
-    :root {
-      --bg: #070c14;
-      --card-bg: rgba(13, 20, 32, 0.78);
-      --card-border: rgba(85, 164, 172, 0.22);
-      --card-hover: rgba(18, 30, 48, 0.92);
-      --accent-1: #38D8AA;
-      --accent-2: #25C2FD;
-      --accent-glow: rgba(56, 216, 170, 0.45);
-      --accent-emerald: #55DB80;
-      --text-main: #f1f7f5;
-      --text-muted: #8fa6a6;
-      --text-soft: #c8ded9;
-      --tag-bg: rgba(56, 216, 170, 0.12);
-      --tag-border: rgba(56, 216, 170, 0.35);
-      --tag-text: #E8FEF4;
-      --input-bg: rgba(15, 23, 42, 0.7);
-      --input-border: rgba(255, 255, 255, 0.12);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --radius-sm: 8px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background-color: var(--bg);
-      background-image:
-        radial-gradient(circle at 10% 15%, rgba(56, 216, 170, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 90% 80%, rgba(37, 195, 253, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(85, 219, 128, 0.10) 0%, transparent 60%);
-      background-attachment: fixed;
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 16px;
-      line-height: 1.6;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 680px;
-    }
-
-    .glass-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5);
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 18px;
-    }
-
-    .header-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .header-link {
-      font-size: 0.85rem;
-      color: var(--accent-1);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .header-link:hover {
-      text-decoration: underline;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-soft);
-      margin-bottom: 6px;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    input[type="time"],
-    input[type="number"],
-    select {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      color: #fff;
-      font-family: inherit;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--accent-1);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 22px;
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-      color: #000;
-      box-shadow: 0 4px 16px var(--accent-glow);
-      width: 100%;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-    }
-
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      padding: 6px 12px;
-      font-size: 0.8rem;
-    }
-
-    .btn-danger:hover {
-      background: rgba(239, 68, 68, 0.3);
-      color: #fff;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-soft);
-      padding: 8px 16px;
-      font-size: 0.85rem;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: #fff;
-    }
-
-    /* Windows List */
-    .window-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .window-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      flex: 1;
-    }
-
-    .window-day {
-      font-weight: 700;
-      color: #fff;
-      font-size: 0.95rem;
-    }
-
-    .window-time {
-      font-size: 0.85rem;
-      color: var(--accent-1);
-      font-weight: 600;
-    }
-
-    .add-window-box {
-      background: rgba(99, 102, 241, 0.05);
-      border: 1px dashed rgba(99, 102, 241, 0.3);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin-top: 16px;
-    }
-
-    .add-window-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr auto;
-      gap: 10px;
-      align-items: end;
-    }
-
-    @media (max-width: 600px) {
-      .add-window-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #1e293b;
-      border: 1px solid var(--accent-1);
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      display: none;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      z-index: 9999;
-    }
-
-    .toast.show {
-      display: block;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -486,10 +220,8 @@
 
   <script>
     const APPS_SCRIPT_WEBAPP_URL = 'https://ward-scheduler-proxy.forsberginventor.workers.dev';
-
     const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    // Default configuration: Sunday 9:30-11:45 & Wednesday 18:30-21:00
     let currentConfig = {
       calendarNameOrId: '129th Ward Meetings',
       bufferMinutes: 0,
@@ -498,42 +230,39 @@
         { day: 0, start: '09:30', end: '11:45' }, // Sunday
         { day: 3, start: '18:30', end: '21:00' }  // Wednesday
       ],
-      meetingTypes: {
-        'quick-catchup': { id: 'quick-catchup', name: 'Quick Catch-up', duration: 10, desc: 'Fast check-in or simple question.' },
-        'mentorship-qa': { id: 'mentorship-qa', name: 'Project Mentorship & Q&A', duration: 10, desc: 'Targeted feedback on a problem or question.' },
-        'tech-consult': { id: 'tech-consult', name: 'Technical & Architecture Consultation', duration: 15, desc: 'In-depth review or discussion.' },
-        'collab-strategy': { id: 'collab-strategy', name: 'Strategy & Planning', duration: 15, desc: 'Long-term planning or project strategy.' }
-      }
+      meetingTypes: [
+        { id: 'quick-catchup', name: 'Quick Catch-up', duration: 10, desc: 'Fast check-in or simple question.' },
+        { id: 'mentorship-qa', name: 'Project Mentorship & Q&A', duration: 10, desc: 'Targeted feedback on a problem or question.' },
+        { id: 'tech-consult', name: 'Technical & Architecture Consultation', duration: 15, desc: 'In-depth review or discussion.' },
+        { id: 'collab-strategy', name: 'Strategy & Planning', duration: 15, desc: 'Long-term planning or project strategy.' }
+      ]
     };
 
-    let sessionPassword = '';
+    let sessionToken = '';
 
     document.addEventListener('DOMContentLoaded', () => {
-      loadLocalConfig();
-      const savedAuth = sessionStorage.getItem('admin_authenticated');
-      const savedPass = sessionStorage.getItem('admin_session_pass');
-      if (savedAuth === 'true' && savedPass) {
-        sessionPassword = savedPass;
-        showDashboard();
+      const savedToken = sessionStorage.getItem('admin_session_token');
+      if (savedToken) {
+        sessionToken = savedToken;
+        verifyExistingSession(savedToken);
       }
     });
 
-    function loadLocalConfig() {
+    async function verifyExistingSession(token) {
       try {
-        const saved = localStorage.getItem('wf_calendar_config');
-        if (saved) {
-          currentConfig = Object.assign(currentConfig, JSON.parse(saved));
+        const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'verifySession', token: token })
+        });
+        const json = await resp.json();
+        if (json.success) {
+          showDashboard();
+        } else {
+          handleLogout();
         }
       } catch (e) {
-        console.warn('Could not read config from localStorage', e);
-      }
-    }
-
-    function saveLocalConfig() {
-      try {
-        localStorage.setItem('wf_calendar_config', JSON.stringify(currentConfig));
-      } catch (e) {
-        console.warn('Could not save config to localStorage', e);
+        console.warn('Session verification failed', e);
       }
     }
 
@@ -542,72 +271,69 @@
       const enteredPass = document.getElementById('admin-pass').value.trim();
       const submitBtn = e.target.querySelector('button[type="submit"]');
       const origText = submitBtn.innerText;
+
       submitBtn.innerText = 'Verifying...';
       submitBtn.setAttribute('disabled', 'true');
 
-      // Check against Apps Script if available
-      if (APPS_SCRIPT_WEBAPP_URL && !APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) {
-        try {
-          const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'verifyAdmin', password: enteredPass })
-          });
-          const json = await resp.json();
-          if (json.success) {
-            sessionPassword = enteredPass;
-            sessionStorage.setItem('admin_authenticated', 'true');
-            sessionStorage.setItem('admin_session_pass', enteredPass);
-            showDashboard();
-            submitBtn.innerText = origText;
-            submitBtn.removeAttribute('disabled');
-            return;
-          } else {
-            showToast(json.error || 'Incorrect password.');
-            submitBtn.innerText = origText;
-            submitBtn.removeAttribute('disabled');
-            return;
-          }
-        } catch (err) {
-          console.error('Remote auth check failed:', err);
-          showToast('Backend connection failed. Try again.');
-          submitBtn.innerText = origText;
-          submitBtn.removeAttribute('disabled');
-          return;
+      try {
+        const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'verifyAdmin', password: enteredPass })
+        });
+        const json = await resp.json();
+
+        if (json.success && json.token) {
+          sessionToken = json.token;
+          sessionStorage.setItem('admin_session_token', json.token);
+          showDashboard();
+        } else {
+          showToast(json.error || 'Incorrect password.');
         }
-      } else {
-        showToast('Backend URL is not configured.');
+      } catch (err) {
+        console.error('Login request failed:', err);
+        showToast('Backend connection failed. Try again.');
+      } finally {
         submitBtn.innerText = origText;
         submitBtn.removeAttribute('disabled');
       }
     }
 
     function handleLogout() {
-      sessionPassword = '';
-      sessionStorage.removeItem('admin_authenticated');
-      sessionStorage.removeItem('admin_session_pass');
+      sessionToken = '';
+      sessionStorage.removeItem('admin_session_token');
       document.getElementById('dashboard-view').style.display = 'none';
       document.getElementById('login-view').style.display = 'block';
     }
 
     function showDashboard() {
+      // Security guard: Ensure a session token actually exists before displaying the dashboard
+      if (!sessionToken || sessionToken.trim() === '') {
+        console.warn('Unauthorized attempt to show dashboard without a session token.');
+        handleLogout();
+        return;
+      }
+
       document.getElementById('login-view').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
 
-      // Load config into inputs
       document.getElementById('cal-id').value = currentConfig.calendarNameOrId || '129th Ward Meetings';
       document.getElementById('buffer-min').value = String(currentConfig.bufferMinutes !== undefined ? currentConfig.bufferMinutes : 0);
       document.getElementById('cluster-min').value = String(currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15);
+
       renderWindowsList();
       renderTypesList();
-
       fetchRemoteConfig();
     }
 
     async function fetchRemoteConfig() {
-      if (!APPS_SCRIPT_WEBAPP_URL || APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) return;
+      if (!APPS_SCRIPT_WEBAPP_URL) return;
       try {
-        const res = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getConfig&password=${encodeURIComponent(sessionPassword)}`);
+        const res = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getConfig', token: sessionToken })
+        });
         const json = await res.json();
         if (json.success && json.config) {
           currentConfig = Object.assign(currentConfig, json.config);
@@ -616,10 +342,9 @@
           document.getElementById('cluster-min').value = String(currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15);
           renderWindowsList();
           renderTypesList();
-          saveLocalConfig();
         }
       } catch (err) {
-        console.warn('Remote config fetch failed, using local', err);
+        console.warn('Remote config fetch failed', err);
       }
     }
 
@@ -713,7 +438,6 @@
         return;
       }
 
-      // Ensure meetingTypes is an array for reliable ordering
       const list = Array.isArray(currentConfig.meetingTypes)
         ? currentConfig.meetingTypes
         : Object.keys(currentConfig.meetingTypes).map(k => currentConfig.meetingTypes[k]);
@@ -738,18 +462,10 @@
             <div style="font-size: 0.8rem; color: var(--text-muted); margin-left: 28px;">${mt.desc || ''}</div>
           </div>
           <div style="display: flex; gap: 6px; align-items: center;">
-            <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="moveMeetingType(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity: 0.3;"' : ''} title="Move Up">
-              ▲
-            </button>
-            <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="moveMeetingType(${idx}, 1)" ${idx === list.length - 1 ? 'disabled style="opacity: 0.3;"' : ''} title="Move Down">
-              ▼
-            </button>
-            <button type="button" class="btn btn-secondary" onclick="editMeetingType(${idx})" style="padding: 4px 10px; font-size: 0.75rem;">
-              Edit
-            </button>
-            <button type="button" class="btn btn-danger" onclick="deleteMeetingType(${idx})" style="padding: 4px 10px;">
-              Remove
-            </button>
+            <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="moveMeetingType(${idx}, -1)" ${idx === 0 ? 'disabled style="opacity: 0.3;"' : ''} title="Move Up">▲</button>
+            <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="moveMeetingType(${idx}, 1)" ${idx === list.length - 1 ? 'disabled style="opacity: 0.3;"' : ''} title="Move Down">▼</button>
+            <button type="button" class="btn btn-secondary" onclick="editMeetingType(${idx})" style="padding: 4px 10px; font-size: 0.75rem;">Edit</button>
+            <button type="button" class="btn btn-danger" onclick="deleteMeetingType(${idx})" style="padding: 4px 10px;">Remove</button>
           </div>
         `;
         container.appendChild(card);
@@ -893,6 +609,7 @@
     function deleteWindow(index) {
       currentConfig.windows.splice(index, 1);
       renderWindowsList();
+      showToast('Window removed. Click "Save Changes" to apply.');
     }
 
     async function handleSaveSettings(e) {
@@ -902,65 +619,47 @@
       saveBtn.innerText = 'Saving...';
       saveBtn.setAttribute('disabled', 'true');
 
-      // 1. Gather form inputs into currentConfig
       currentConfig.calendarNameOrId = document.getElementById('cal-id').value.trim();
       currentConfig.bufferMinutes = parseInt(document.getElementById('buffer-min').value, 10) || 0;
       currentConfig.clusterWindowMinutes = parseInt(document.getElementById('cluster-min').value, 10) || 0;
 
       const newPass = document.getElementById('new-pass').value.trim();
 
-      // 2. Capture the existing session password to authorize the request
-      const authPassword = sessionPassword;
-
-      // 3. Build the payload, separating authorization from the new password request
       const payload = {
         action: 'saveConfig',
-        password: authPassword, // Sent to the backend to prove authorization
+        token: sessionToken,
         config: currentConfig
       };
 
       if (newPass) {
-        payload.newPassword = newPass; // Sent separately so the backend can update it safely
+        payload.newPassword = newPass;
       }
 
-      // 4. Sync to Apps Script backend with authentication (Executed ONCE)
-      if (APPS_SCRIPT_WEBAPP_URL && !APPS_SCRIPT_WEBAPP_URL.includes('PASTE_YOUR')) {
-        try {
-          const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-          });
-          const json = await resp.json();
+      try {
+        const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const json = await resp.json();
 
-          if (!json.success) {
-            showToast('Warning: ' + (json.error || 'Backend rejected save'));
-            saveBtn.innerText = origBtn;
-            saveBtn.removeAttribute('disabled');
-            return;
-          }
-        } catch (err) {
-          console.error('Error syncing config to Apps Script:', err);
-          showToast('Error connecting to backend.');
-          saveBtn.innerText = origBtn;
-          saveBtn.removeAttribute('disabled');
+        if (!json.success) {
+          showToast('Warning: ' + (json.error || 'Backend rejected save'));
           return;
         }
+
+        if (newPass) {
+          document.getElementById('new-pass').value = '';
+        }
+
+        showToast('Availability settings updated successfully!');
+      } catch (err) {
+        console.error('Error saving config:', err);
+        showToast('Error connecting to backend.');
+      } finally {
+        saveBtn.innerText = origBtn;
+        saveBtn.removeAttribute('disabled');
       }
-
-      // 5. Update local session states if a new password was accepted
-      if (newPass) {
-        sessionPassword = newPass;
-        sessionStorage.setItem('admin_session_pass', newPass);
-        document.getElementById('new-pass').value = '';
-      }
-
-      // 6. Save locally and reset button state
-      saveLocalConfig();
-
-      saveBtn.innerText = origBtn;
-      saveBtn.removeAttribute('disabled');
-      showToast('Availability settings updated successfully!');
     }
 
     function showToast(msg) {
