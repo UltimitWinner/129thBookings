@@ -112,25 +112,26 @@
               In Person
             </div>
           </div>
+        </div>
 
-          <div id="selection-calc-container" class="selection-calc-pill" style="display: none;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-1)" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 15 15"></polyline>
+        <div id="selection-calc-container" class="selection-calc-pill" style="display: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-1)" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 15 15"></polyline>
+          </svg>
+          <div id="selection-calc-text">Selected: <strong>0 topics</strong> • Scheduled Duration: <strong>0
+              mins</strong></div>
+        </div>
+
+        <div class="button-row" style="justify-content: flex-end;">
+          <button type="button" class="btn btn-primary" id="btn-to-step-2" disabled onclick="goToStep(2)">
+            Continue to Date & Time
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
-            <div id="selection-calc-text">Selected: <strong>0 topics</strong> • Scheduled Duration: <strong>0
-                mins</strong></div>
-          </div>
-
-          <div class="button-row" style="justify-content: flex-end;">
-            <button type="button" class="btn btn-primary" id="btn-to-step-2" disabled onclick="goToStep(2)">
-              Continue to Date & Time
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-          </div>
+          </button>
+        </div>
       </section>
 
       <!-- STEP 2: Select Date & Time -->
