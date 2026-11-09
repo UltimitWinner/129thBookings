@@ -485,6 +485,7 @@
     function renderMeetingTypeCards() {
       const container = document.getElementById('meeting-types-list');
       if (!container) return;
+
       container.innerHTML = '';
 
       // Normalize into ordered array
@@ -846,7 +847,19 @@
         }
       }
 
+
       container.innerHTML = '';
+
+      const oneHourFromNow = Date.now() + 60 * 60 * 1000;
+      slotsToDisplay = slotsToDisplay.filter(timeStr => {
+        const [timePart, period] = timeStr.trim().split(' ');
+        let [h, m] = timePart.split(':').map(Number);
+        if (period === 'PM' && h !== 12) h += 12;
+        if (period === 'AM' && h === 12) h = 0;
+        const slotDate = new Date(date);
+        slotDate.setHours(h, m, 0, 0);
+        return slotDate.getTime() >= oneHourFromNow;
+      });
 
       if (slotsToDisplay.length === 0) {
         subtitle.innerText = 'No slots available';
@@ -922,6 +935,10 @@
 
       const startDate = new Date(selectedDate);
       startDate.setHours(hours, minutes, 0, 0);
+      if (startDate.getTime() < Date.now() + 60 * 60 * 1000) {
+        showToast('Appointments must be scheduled at least 1 hour in advance.');
+        return;
+      }
 
       const endDate = new Date(startDate.getTime() + selectedMeeting.duration * 60 * 1000);
 
