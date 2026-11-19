@@ -163,6 +163,61 @@
           </div>
         </div>
 
+        <!-- Specific Date Overrides (Individual Day Availability) -->
+        <div class="form-group"
+          style="margin-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <label style="font-size: 0.95rem; font-weight: 700; color: #fff;">
+              Specific Date Overrides
+            </label>
+            <span style="font-size: 0.75rem; color: var(--accent-1); font-weight: 500;">Per-day overrides</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            Set custom availability or mark specific calendar dates as unavailable/closed, overriding the weekly pattern.
+          </div>
+
+          <div id="specific-dates-list">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Add / Set Date Override Box -->
+          <div class="add-window-box">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft); margin-bottom: 10px;">
+              + Set Specific Date Override
+            </div>
+            <div style="display: grid; grid-template-columns: 1.3fr 1.2fr; gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label for="override-date" style="font-size: 0.75rem;">Date</label>
+                <input type="date" id="override-date" />
+              </div>
+              <div>
+                <label for="override-type" style="font-size: 0.75rem;">Status / Schedule</label>
+                <select id="override-type" onchange="toggleOverrideTimes()">
+                  <option value="closed">Closed / Unavailable (No Slots)</option>
+                  <option value="custom">Custom Hours</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="override-custom-times" style="display: none; margin-bottom: 10px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <label for="override-start" style="font-size: 0.75rem;">Start Time</label>
+                  <input type="time" id="override-start" value="10:00" />
+                </div>
+                <div>
+                  <label for="override-end" style="font-size: 0.75rem;">End Time</label>
+                  <input type="time" id="override-end" value="14:00" />
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary" onclick="addSpecificDateFromForm()" style="width: 100%;">
+              Save Date Override
+            </button>
+          </div>
+        </div>
+
         <!-- Meeting Types & Durations Manager -->
         <div class="form-group"
           style="margin-top: 28px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px;">
@@ -230,6 +285,7 @@
         { day: 0, start: '09:30', end: '11:45' }, // Sunday
         { day: 3, start: '18:30', end: '21:00' }  // Wednesday
       ],
+      specificDates: {},
       meetingTypes: [
         { id: 'quick-catchup', name: 'Quick Catch-up', duration: 10, desc: 'Fast check-in or simple question.' },
         { id: 'mentorship-qa', name: 'Project Mentorship & Q&A', duration: 10, desc: 'Targeted feedback on a problem or question.' },
@@ -322,6 +378,7 @@
       document.getElementById('cluster-min').value = String(currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15);
 
       renderWindowsList();
+      renderSpecificDatesList();
       renderTypesList();
       fetchRemoteConfig();
     }
@@ -577,6 +634,124 @@
       currentConfig.meetingTypes.splice(index, 1);
       renderTypesList();
       showToast('Removed meeting type. Click "Save Changes" to apply.');
+    }
+
+
+    function toggleOverrideTimes() {
+      const type = document.getElementById('override-type').value;
+      const customTimesBox = document.getElementById('override-custom-times');
+      customTimesBox.style.display = type === 'custom' ? 'block' : 'none';
+    }
+
+    function prunePastSpecificDates(config) {
+      if (!config || !config.specificDates || typeof config.specificDates !== 'object') return;
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+
+      Object.keys(config.specificDates).forEach(dateStr => {
+        if (dateStr < todayStr) {
+          delete config.specificDates[dateStr];
+        }
+      });
+    }
+
+    function renderSpecificDatesList() {
+      const container = document.getElementById('specific-dates-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!currentConfig.specificDates || typeof currentConfig.specificDates !== 'object') {
+        currentConfig.specificDates = {};
+      }
+
+      prunePastSpecificDates(currentConfig);
+
+      const dateKeys = Object.keys(currentConfig.specificDates).sort();
+
+      if (dateKeys.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem; padding: 12px 0;">No date overrides configured. Default weekly windows apply to all days.</div>';
+        return;
+      }
+
+      dateKeys.forEach(dateStr => {
+        const item = currentConfig.specificDates[dateStr];
+        const card = document.createElement('div');
+        card.className = 'window-card';
+
+        // Format friendly date string
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const dateObj = new Date(y, m - 1, d);
+        const friendlyDate = dateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
+        let detailText = '';
+        if (item.type === 'closed') {
+          detailText = '<span style="color: #f87171; font-weight: 600;">Closed / Unavailable</span>';
+        } else if (item.type === 'custom' && Array.isArray(item.windows) && item.windows.length > 0) {
+          const times = item.windows.map(w => `${formatTimeStr(w.start)} – ${formatTimeStr(w.end)}`).join(', ');
+          detailText = `<span style="color: var(--accent-1); font-weight: 500;">Custom: ${times}</span>`;
+        } else {
+          detailText = 'Custom hours';
+        }
+
+        card.innerHTML = `
+          <div class="window-info">
+            <div class="window-day">${friendlyDate} <span style="font-size: 0.78rem; opacity: 0.6; font-weight: normal;">(${dateStr})</span></div>
+            <div class="window-time" style="font-size: 0.85rem;">${detailText}</div>
+          </div>
+          <button type="button" class="btn btn-danger" onclick="deleteSpecificDate('${dateStr}')">
+            Remove
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addSpecificDateFromForm() {
+      const dateVal = document.getElementById('override-date').value;
+      const typeVal = document.getElementById('override-type').value;
+
+      if (!dateVal) {
+        showToast('Please select a date.');
+        return;
+      }
+
+      if (!currentConfig.specificDates || typeof currentConfig.specificDates !== 'object') {
+        currentConfig.specificDates = {};
+      }
+
+      if (typeVal === 'closed') {
+        currentConfig.specificDates[dateVal] = { type: 'closed' };
+      } else {
+        const start = document.getElementById('override-start').value;
+        const end = document.getElementById('override-end').value;
+        if (!start || !end) {
+          showToast('Please specify start and end time for custom hours');
+          return;
+        }
+        if (start >= end) {
+          showToast('Start time must be before end time');
+          return;
+        }
+        currentConfig.specificDates[dateVal] = {
+          type: 'custom',
+          windows: [{ start, end }]
+        };
+      }
+
+      document.getElementById('override-date').value = '';
+      renderSpecificDatesList();
+      showToast(`Override for ${dateVal} added. Click "Save Changes" to apply.`);
+    }
+
+    function deleteSpecificDate(dateStr) {
+      if (currentConfig.specificDates && currentConfig.specificDates[dateStr]) {
+        delete currentConfig.specificDates[dateStr];
+        renderSpecificDatesList();
+        showToast(`Override for ${dateStr} removed. Click "Save Changes" to apply.`);
+      }
     }
 
     function formatTimeStr(time24) {

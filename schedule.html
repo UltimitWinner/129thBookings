@@ -372,6 +372,8 @@
     let currentConfig = {
       bufferMinutes: 0,
       clusterWindowMinutes: 15,
+      windows: [],
+      specificDates: {},
       meetingTypes: []
     };
     let meetingTypes = [];
@@ -401,15 +403,19 @@
           // Note: Make sure your Apps Script doGet() handles action=getConfig publicly
           const resp = await fetch(`${APPS_SCRIPT_WEBAPP_URL}?action=getConfig`);
           const json = await resp.json();
-          if (json.success && json.config && json.config.meetingTypes) {
+          if (json.success && json.config) {
             currentConfig = Object.assign(currentConfig, json.config);
-            meetingTypes = currentConfig.meetingTypes;
-
-            // Cache it locally
+            if (json.config.meetingTypes) {
+              meetingTypes = currentConfig.meetingTypes;
+              renderMeetingTypeCards();
+            }
+            if (Array.isArray(json.config.windows) && json.config.windows.length > 0) {
+              activeAvailabilityWindows = json.config.windows;
+            }
             localStorage.setItem('wf_calendar_config', JSON.stringify(currentConfig));
-
-            // Re-render cards with the fresh live data from the admin panel
-            renderMeetingTypeCards();
+            if (typeof renderCalendar === 'function') {
+              renderCalendar(currentCalMonth, currentCalYear);
+            }
           }
         } catch (err) {
           console.warn('Could not fetch live remote config, using local cache', err);
@@ -442,6 +448,24 @@
     }
 
     // Active availability windows (synced with admin settings and backend)
+
+    // Helper to get active availability windows for a given Date
+    function getWindowsForDate(cellDate) {
+      const yyyy = cellDate.getFullYear();
+      const mm = String(cellDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(cellDate.getDate()).padStart(2, '0');
+      const isoDate = `${yyyy}-${mm}-${dd}`;
+
+      if (currentConfig && currentConfig.specificDates && currentConfig.specificDates[isoDate]) {
+        const override = currentConfig.specificDates[isoDate];
+        if (override.type === 'closed') {
+          return [];
+        } else if (override.type === 'custom' && Array.isArray(override.windows)) {
+          return override.windows;
+        }
+      }
+      return activeAvailabilityWindows.filter(w => w.day === cellDate.getDay());
+    }
     let activeAvailabilityWindows = [
       { day: 0, start: '09:30', end: '11:45' }, // Sunday: 9:30 - 11:45 AM
       { day: 3, start: '18:30', end: '21:00' }  // Wednesday: 6:30 - 9:00 PM
@@ -457,6 +481,9 @@
           }
           if (cfg.meetingTypes) {
             meetingTypes = cfg.meetingTypes;
+          }
+          if (cfg.specificDates) {
+            currentConfig.specificDates = cfg.specificDates;
           }
         }
       } catch (e) {
@@ -752,8 +779,8 @@
         const cellDate = new Date(year, month, day);
         cellDate.setHours(0, 0, 0, 0);
 
-        const dayOfWeek = cellDate.getDay();
-        const hasWindowOnDay = activeAvailabilityWindows.some(w => w.day === dayOfWeek);
+        const windowsOnDate = getWindowsForDate(cellDate);
+        const hasWindowOnDay = windowsOnDate.length > 0;
         const isPast = cellDate < today;
         const isBeyondMax = cellDate > maxDate;
 
@@ -813,7 +840,7 @@
       const duration = selectedMeeting ? selectedMeeting.duration : 15;
 
       // Generate default window start times as fallback (at start time and within cluster window)
-      const matchingWindows = activeAvailabilityWindows.filter(w => w.day === date.getDay());
+      const matchingWindows = getWindowsForDate(date);
       let slotsToDisplay = [];
       const clusterMinutes = currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15;
       matchingWindows.forEach(w => {
