@@ -398,6 +398,7 @@
           document.getElementById('buffer-min').value = String(currentConfig.bufferMinutes !== undefined ? currentConfig.bufferMinutes : 0);
           document.getElementById('cluster-min').value = String(currentConfig.clusterWindowMinutes !== undefined ? currentConfig.clusterWindowMinutes : 15);
           renderWindowsList();
+          renderSpecificDatesList();
           renderTypesList();
         }
       } catch (err) {

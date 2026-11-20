@@ -412,6 +412,9 @@
             if (Array.isArray(json.config.windows) && json.config.windows.length > 0) {
               activeAvailabilityWindows = json.config.windows;
             }
+            if (json.config.specificDates) {
+              currentConfig.specificDates = json.config.specificDates;
+            }
             localStorage.setItem('wf_calendar_config', JSON.stringify(currentConfig));
             if (typeof renderCalendar === 'function') {
               renderCalendar(currentCalMonth, currentCalYear);
@@ -501,11 +504,12 @@
       } catch (e) {
         document.getElementById('user-detected-tz').innerText = 'Timezone: Local';
       }
-      // Call the new config loader here instead of rendering static hardcoded cards
-      loadFrontendConfig();
+      // Load saved cached availability first so currentConfig is initialized before rendering
       loadSavedAvailabilityConfig();
       renderMeetingTypeCards();
       initCalendar();
+      // Fetch live config from backend in background to refresh
+      loadFrontendConfig();
     });
 
     // Step 1: Render and bind Multi-select Meeting Type Selection
