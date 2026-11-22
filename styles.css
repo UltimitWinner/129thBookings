@@ -1,4 +1,5 @@
 :root {
+    color-scheme: dark;
     --bg: #070c14;
     --card-bg: rgba(13, 20, 32, 0.78);
     --card-border: rgba(85, 164, 172, 0.22);
@@ -19,6 +20,134 @@
     --radius-lg: 18px;
     --radius-md: 12px;
     --radius-sm: 8px;
+}
+
+
+
+@media (prefers-color-scheme: light) {
+    :root {
+        color-scheme: light;
+        --bg: #f4f7fb;
+        --card-bg: #ffffff;
+        --card-border: #cbd5e1;
+        --card-hover: #eef4f8;
+        --accent-1: #08785d;
+        --accent-2: #126b9a;
+        --accent-glow: rgba(8, 120, 93, 0.18);
+        --accent-emerald: #16834b;
+        --text-main: #17212b;
+        --text-muted: #526170;
+        --text-soft: #334155;
+        --tag-bg: #e8f5ef;
+        --tag-border: #9bcbb5;
+        --tag-text: #14513d;
+        --input-bg: #ffffff;
+        --input-border: #8a99a8;
+    }
+
+    body {
+        background-image: radial-gradient(circle at 10% 15%, rgba(8, 120, 93, 0.08), transparent 45%),
+            radial-gradient(circle at 90% 80%, rgba(18, 107, 154, 0.08), transparent 45%);
+    }
+
+    .glass-card {
+        box-shadow: 0 12px 32px rgba(25, 42, 60, 0.10);
+    }
+
+    .header {
+        border-bottom-color: #d8e0e8;
+    }
+
+    .header-title,
+    .section-title,
+    .selection-calc-pill strong,
+    .meeting-title,
+    .calendar-month,
+    .slot-heading,
+    .summary-item,
+    .window-day,
+    .recap-value,
+    .step-item.active .step-label {
+        color: #17212b;
+    }
+
+    h1 {
+        background: none;
+        color: #17212b;
+        -webkit-text-fill-color: currentColor;
+    }
+
+    .step-indicator::before,
+    .button-row {
+        border-color: #d8e0e8;
+    }
+
+    .step-indicator::before {
+        background: #d8e0e8;
+    }
+
+    .step-circle {
+        background: #e8edf2;
+        border-color: #aab7c4;
+        color: #526170;
+    }
+
+    .step-item.active .step-circle,
+    .step-item.completed .step-circle {
+        color: #fff;
+    }
+
+    .meeting-card,
+    .window-card,
+    .host-banner {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+    .meeting-card-check {
+        background: #fff;
+        border-color: #8796a5;
+    }
+
+    .duration-tag,
+    .time-slot-btn,
+    .cal-nav-btn,
+    .btn-secondary {
+        background: #edf2f6;
+        border-color: #c5d0da;
+    }
+
+    .calendar-container,
+    .time-slots-container {
+        background: #f8fafc;
+        border-color: #d6dee6;
+    }
+
+    .cal-day.disabled {
+        color: #7b8794;
+    }
+
+    .cal-day:hover:not(.disabled):not(.empty),
+    .time-slot-btn:hover,
+    .cal-nav-btn:hover,
+    .btn-secondary:hover {
+        color: #17212b;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="time"],
+    input[type="number"],
+    textarea,
+    select {
+        color: #17212b;
+    }
+
+    .toast {
+        background: #17212b;
+        color: #fff;
+    }
 }
 
 * {
@@ -1004,6 +1133,44 @@ textarea {
     }
 }
 
+/* Light theme corrections must follow component rules so they win the cascade. */
+@media (prefers-color-scheme: light) {
+    h1 {
+        background: none;
+        color: #17212b;
+        -webkit-text-fill-color: #17212b;
+    }
+
+    .step-label,
+    .step-item.active .step-label { color: #334155; }
+
+    .step-circle {
+        background: #e8edf2;
+        border-color: #7b8997;
+        color: #334155;
+    }
+
+    .step-item.active .step-circle,
+    .step-item.completed .step-circle {
+        background: #08785d;
+        border-color: #08785d;
+        color: #fff;
+        box-shadow: none;
+    }
+
+    input[type="text"], input[type="password"], input[type="email"],
+    input[type="time"], input[type="number"], textarea, select { color: #17212b; }
+
+    .btn-primary, .btn-success { color: #fff; }
+    .btn-danger { color: #9b1c1c; }
+    .btn:focus-visible, .cal-nav-btn:focus-visible, .cal-day:focus-visible,
+    .time-slot-btn:focus-visible, .step-item:focus-visible, input:focus-visible,
+    textarea:focus-visible, select:focus-visible, a:focus-visible {
+        outline: 3px solid #075985;
+        outline-offset: 3px;
+    }
+}
+
 /* Host Info Banner */
 .host-banner {
     display: flex;
@@ -1135,4 +1302,92 @@ textarea {
     .booking-card-recap {
         padding: 16px;
     }
+}
+
+/* Refined light counterpart to the dark glass theme. */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #f2f6fa;
+        background-image:
+            radial-gradient(ellipse at 8% 8%, rgba(8, 120, 93, 0.10), transparent 38%),
+            radial-gradient(ellipse at 92% 88%, rgba(18, 107, 154, 0.09), transparent 40%);
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.94);
+        border-color: #d7e0e8;
+        box-shadow: 0 18px 48px rgba(31, 52, 72, 0.10), 0 2px 8px rgba(31, 52, 72, 0.04);
+    }
+
+    .header { border-bottom-color: #e2e8ee; }
+    .header-title, .section-title, .meeting-title, .calendar-month,
+    .slot-heading, .summary-item, .window-day, .recap-value,
+    .selection-calc-pill strong { color: #172b3a; }
+    .headline { color: #34495a; }
+    .subtext, .section-desc, .meeting-desc { color: #526577; }
+
+    .step-indicator::before { background: #d4dee6; }
+    .step-item .step-label { color: #526577; }
+    .step-circle { background: #e9eff4; border-color: #b8c5cf; color: #34495a; }
+    .step-item.active .step-circle, .step-item.completed .step-circle {
+        background: linear-gradient(135deg, #08785d, #126b9a);
+        border-color: transparent;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(8, 120, 93, 0.20);
+    }
+    .step-item.active .step-label { color: #14513d; }
+
+    .meeting-card, .window-card {
+        background: linear-gradient(145deg, #ffffff, #f7fafc);
+        border-color: #d6e0e8;
+        box-shadow: 0 3px 10px rgba(31, 52, 72, 0.035);
+    }
+    .meeting-card:hover {
+        background: #f2f8f7;
+        border-color: #83b7a6;
+        box-shadow: 0 12px 28px rgba(31, 76, 67, 0.10);
+    }
+    .meeting-card.selected {
+        background: linear-gradient(145deg, #f0faf6, #edf6fb);
+        border-color: #16836b;
+        box-shadow: 0 0 0 2px rgba(8, 120, 93, 0.16), 0 10px 24px rgba(31, 76, 67, 0.09);
+    }
+    .meeting-title { color: #172b3a; }
+    .duration-tag { background: #edf3f6; color: #3b5060; }
+    .meeting-icon { background: #e8f3ef; color: #08785d; }
+    .meeting-card.selected .meeting-icon {
+        background: linear-gradient(135deg, #08785d, #126b9a);
+        color: #fff;
+    }
+    .meeting-card-check { background: #fff; border-color: #9eacb8; }
+
+    .calendar-container, .time-slots-container {
+        background: #f8fafc;
+        border-color: #dce5eb;
+    }
+    .cal-day { color: #34495a; }
+    .cal-day.disabled { color: #8794a0; }
+    .cal-day.selected, .time-slot-btn.selected {
+        background: linear-gradient(135deg, #08785d, #126b9a);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(8, 120, 93, 0.20);
+    }
+    .time-slot-btn { background: #fff; border-color: #d6e0e8; color: #34495a; }
+    .cal-nav-btn, .btn-secondary { background: #fff; color: #34495a; border-color: #ccd7df; }
+
+    input[type="text"], input[type="password"], input[type="email"], input[type="time"],
+    input[type="number"], textarea, select {
+        background: #fff;
+        border-color: #aab8c4;
+        color: #172b3a;
+    }
+    input::placeholder, textarea::placeholder { color: #667887; opacity: 1; }
+    .summary-badge-bar, .selection-calc-pill {
+        background: #f0f6f8;
+        border-color: #d2e0e5;
+        color: #34495a;
+    }
+    .host-banner { background: #f7fafc; border-color: #dce5eb; }
+    .host-banner strong { color: #34495a; }
+    .btn-primary, .btn-success { color: #fff; }
 }
